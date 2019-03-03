@@ -1,4 +1,3 @@
-
 from flask import Flask, request, send_from_directory
 from flask_httpauth import HTTPBasicAuth
 from io import BytesIO
@@ -44,5 +43,5 @@ def get_pw(username):
         return None
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', ssl_context='adhoc')
+    app.run(host='0.0.0.0', port=8443, ssl_context='adhoc')
 
