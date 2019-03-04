@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, render_template
 from io import BytesIO
 from time import sleep
 from picamera import PiCamera
@@ -11,10 +11,14 @@ from ghost_jukebox import app, auth
 camera = PiCamera()
 camera.resolution = (1024, 768)
 
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('static', filename='favicon.ico'))
+
 @app.route('/')
 @auth.login_required
 def hello_world():
-    return 'Hello, {}!'.format(auth.username())
+    return render_template('index.html', name=auth.username())
 
 @app.route('/capture')
 @auth.login_required
