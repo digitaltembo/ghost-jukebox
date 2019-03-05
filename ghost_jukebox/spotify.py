@@ -63,12 +63,12 @@ def spotify_url(service, endpoint):
 
 @app.route('/spotify/login')
 @auth.login_required
-def spotify_auth1():
+def authorize():
 
     request_params = {
         'client_id'     : conf.spotify_client,
         'response_type' : 'code',
-        'redirect_uri'  : url_for(spotify_auth2),
+        'redirect_uri'  : 'https://{}{}'.format(conf.host, url_for('callback')),
         'scope'         : ' '.join(scopes)
     }
 
@@ -77,13 +77,13 @@ def spotify_auth1():
     return redirect(url)
 
 @app.route('/spotify/callback')
-def spotify_auth2():
+def callback():
     access_code = request.args.get('code','')
     if access_code:
         payload = {
             'grant_type'   : 'authorization_code',
             'code'         : access_code,
-            'redirect_uri' : url_for(spotify_auth2)
+            'redirect_uri' : 'https://{}{}'.format(conf.host, url_for('callback'))
         }
 
         token_response = requests.post(
@@ -94,6 +94,7 @@ def spotify_auth2():
         try: 
             j = token_response.json()
             token.set_token(j['access_token'], j['refresh_token'], int(j['expires_in']))
+            return 'AWESOME'
         except:
             return 'blah'
     else:
