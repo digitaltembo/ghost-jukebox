@@ -7,7 +7,8 @@ CREATE TABLE info(
 
 -- table to store QR code info
 CREATE TABLE qr_codes(
-    id INT PRIMARY KEY,
+    code TEXT,
     type INT,
-    uri TEXT 
+    uri TEXT,
+    image_file TEXT
 );
