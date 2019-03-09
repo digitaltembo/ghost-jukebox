@@ -6,8 +6,9 @@ import time
 
 from ghost_jukebox import app, auth
 
-@app.rout('/')
+@app.route('/')
 @auth.login_required
 def root():
-    return redirect(url_for('home'))
+    return redirect('/s')
+
 
