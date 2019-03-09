@@ -19,6 +19,6 @@ def get_pw(username):
         return users.get(username)
         return None
 
-import ghost_jukebox.views
-import ghost_jukebox.spotify
+import ghost_jukebox.views.home
+import ghost_jukebox.views.spotify
 
