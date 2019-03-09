@@ -1,0 +1,29 @@
+% extends "base.html" %}
+{% block title %}Artist: {{ title }}{% endblock %}
+{% block content %}
+    <img src="{{  image_url }}"/>
+    <h1>{{ title }}</h1>
+    <p>
+        Top Albums:
+        <ul>
+        {% for album in albums %}
+            <li>{{ album.name }}</li>
+        {% endfor %}
+        </ul>
+        <br/>
+        Top Tracks:
+        <ul>
+        {% for track in tracks %}
+            <li>{{ track.name }}</li>
+        {% endfor %}
+        </ul>
+        Related Artists:
+        <ul>
+        {% for artist in related_artists %}
+            <li>{{ artist.name }}</li>
+        {% endfor %}
+        </ul>
+        <br/>
+    </p>
+
+{% endblock %}
