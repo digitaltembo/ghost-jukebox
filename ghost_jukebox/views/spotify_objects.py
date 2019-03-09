@@ -71,14 +71,14 @@ def album_from_json(info):
             spotify_link = info['external_urls']['spotify'] if 'spotify' in info['external_urls'] else None,
             genres = info['genres'] if 'genres' in info else None,
             image_set = image_set_from_json(info['images']) if 'images' in info else None,
-            tracks = remove_empties([track_from_json(track) for track in info['tracks']]) if 'tracks' in info else None,
+            tracks = remove_empties([track_from_json(track) for track in info['tracks']['items']]) if 'tracks' in info else None,
             label = info['label'] if 'label' in info else None,
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except:
         return False
 
-def Track:
+class Track:
     def __init__(
         self,
         uri,
@@ -86,6 +86,7 @@ def Track:
         artists,
         duration_ms,
         track_number,
+        spotify_link,
         is_explicit,        
         preview_url = None,
         album = None,
@@ -107,9 +108,9 @@ def track_from_json(info):
             uri = info['uri'],
             name = info['name'],
             artists = remove_empties([artist_from_json(artist) for artist in info['artists']]),
-            spotify_link = info['external_urls']['spotify'] if 'spotify' in info['external_urls'] else None,
             duration_ms = int(info['duration_ms']),
             track_number = int(info['track_number']),
+            spotify_link = info['external_urls']['spotify'] if 'spotify' in info['external_urls'] else None,
             is_explicit = info['explicit'],
             preview_url = info['preview_url'] if 'preview_url' in info else None,
             album = album_from_json(info['album']) if 'album' in info else None,
@@ -167,3 +168,4 @@ def image_set_from_json(info):
 
 def remove_empties(lizt):
     return filter(lambda i: i, lizt)
+

@@ -22,3 +22,4 @@ def get_pw(username):
 import ghost_jukebox.views.home
 import ghost_jukebox.views.spotify
 import ghost_jukebox.views.frontend
+import ghost_jukebox.views.qrcodes

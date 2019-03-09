@@ -1,4 +1,4 @@
-% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Artist: {{ title }}{% endblock %}
 {% block content %}
     <img src="{{  image_url }}"/>
@@ -14,7 +14,7 @@
         Top Tracks:
         <ul>
         {% for track in tracks %}
-            <li>{{ track.name }}</li>
+            <li>{{ track.name }} <a href="{{ track.preview_url }}">Preview</a></li>
         {% endfor %}
         </ul>
         Related Artists:

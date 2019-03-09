@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, url_for, render_template
 from ghost_jukebox import app, auth
-from ghost_jukebox.models.db import info, qr
+from ghost_jukebox.models import info, qr
+from ghost_jukebox.views import spotify
 
 @app.route('/s//QR<code>')
 def get_qr_info(code):
@@ -8,15 +9,15 @@ def get_qr_info(code):
     if not qrinfo:
         return 'blah'
 
-    if qrinfo.type == qr.SPOTIFY_TRACK:
+    if qrinfo.qrtype == qr.SPOTIFY_TRACK:
         return render_spotify_track(qrinfo)
-    elif qrinfo.type == qr.SPOTIFY_ALBUM:
+    elif qrinfo.qrtype == qr.SPOTIFY_ALBUM:
         return render_spotify_album(qrinfo)
-    elif qrinfo.type == qr.SPOTIFY_ARTIST:
+    elif qrinfo.qrtype == qr.SPOTIFY_ARTIST:
         return render_spotify_artist(qrinfo)
-    elif qrinfo.type == qr.SPOTIFY_PLAYLIST:
+    elif qrinfo.qrtype == qr.SPOTIFY_PLAYLIST:
         return render_spotify_playlist(qrinfo)
-    elif qrinfo.type == qr.ONLINE_RADIO:
+    elif qrinfo.qrtype == qr.ONLINE_RADIO:
         radio_info_parts = qrinfo.uri.split('|')
         if len(radio_info_parts) != 2:
             return 'blah'
@@ -34,7 +35,7 @@ def render_spotify_artist(qrinfo):
         return 'dang'
     related_artists = spotify.related_artists(artist_id)
     top_tracks = spotify.top_tracks_of_artist(artist_id)
-    top_albums = spotify.top_albums(artist_id)
+    top_albums = spotify.top_albums_of_artist(artist_id)
     return render_template(
         'qr_info_artist.html',
         image_url = qrinfo.image_url, 
@@ -44,11 +45,3 @@ def render_spotify_artist(qrinfo):
         tracks = top_tracks 
     )
 
-
-
-
-
-SPOTIFY_ALBUM
-SPOTIFY_ARTIST
-SPOTIFY_PLAYLIST
-ONLINE_RADIO

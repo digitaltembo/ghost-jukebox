@@ -15,16 +15,17 @@ class QRInfo:
         self.code = code
         self.qrtype = qrtype
         self.uri = uri 
-        self.image_url = url_for(static, filename='qrimages/{}'.format(image))
+        self.image_url = url_for('static', filename='qrimages/{}'.format(image))
 
 
 def get_qr_info(code):
-    row = query_one('SELECT code, type, uri, image_file FROM qr WHERE code = ?', [code])
+    row = query_one('SELECT code, type, uri, image_file FROM qr_codes WHERE code = ?', [code])
     if row:
         return QRInfo(row[0], row[1], row[2], row[3])
     else:
         return None
 
 def insert(qrinfo):
-    query_one('INSERT INTO qr (code, type, uri, image_file) VALUES (?, ?, ?, ?)', [qrinfo.code, qrinfo.code, qrinfo.uri, qrinfo.image])
+    query_one('INSERT INTO qr_codes (code, type, uri, image_file) VALUES (?, ?, ?, ?)', [qrinfo.code, qrinfo.code, qrinfo.uri, qrinfo.image])
+
 
