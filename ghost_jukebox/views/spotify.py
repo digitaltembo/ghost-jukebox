@@ -158,6 +158,7 @@ def internal_spotify_call(method, endpoint):
         app.logger.debug('REQUEST: {} returned {}: {}'.format(url, response.status_code, response.content))
         return (response.json(), response.status_code)
 
+# returns Artist
 def artist(artist_id):
     info, response_code = internal_spotify_call('GET', 'artists/{}'.format(artist_id))
     if not info or response_code != 200:
@@ -165,17 +166,14 @@ def artist(artist_id):
         return False
     return spotify_objects.artist_from_json(info)
 
+
 # returns Array<Artist> if a valid artist
 def related_artists(artist_id):
     info, response_code = internal_spotify_call('GET', 'artists/{}/related-artists'.format(artist_id))
     if not info or response_code != 200:
         app.logger.error('Failed to fetch artist: {}'.format(info))
         return False
-    try:
-        return [spotify_objects.artist_from_json(artist) for artist in info['artists']]
-    except Exception:
-        app.logger.exception('Failed to parse artist: {}'.format(info))
-        return False
+    return [spotify_objects.artist_from_json(artist) for artist in info['artists']]
 
 # returns Array<Album> if a valid artist id
 def top_albums_of_artist(artist_id):
@@ -183,11 +181,7 @@ def top_albums_of_artist(artist_id):
     if not info or response_code != 200:
         app.logger.error('Failed to fetch albums: {}'.format(info))
         return False
-    try:
-        return [spotify_objects.album_from_json(album) for album in info['items']]
-    except Exception:
-        app.logger.exception('Failed to parse albums: {}'.format(info))
-        return False
+    return [spotify_objects.album_from_json(album) for album in info['items']]
 
 # returns: Array<Track> if valid artist id
 def top_tracks_of_artist(artist_id):
@@ -195,9 +189,51 @@ def top_tracks_of_artist(artist_id):
     if not info or response_code != 200:
         app.logger.error('Failed to fetch tracks: {}'.format(info))
         return False
-    try:
-        return [spotify_objects.track_from_json(album) for album in info['tracks']]
-    except Exception:
-        app.logger.exception('Failed to parse tracks: {}'.format(info))
+    return [spotify_objects.track_from_json(album) for album in info['tracks']]
+
+# returns: Album
+def album(album_id):
+    info, response_code = internal_spotify_call('GET', 'albums/{}'.format(album_id))
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch album: {}'.format(info))
         return False
+    return spotify_objects.album_from_json(info)
+
+# returns: Track
+def track(track_id):
+    info, response_code = internal_spotify_call('GET', 'tracks/{}'.format(track_id))
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch track: {}'.format(info))
+        return False
+    return spotify_objects.track_from_json(info)
+
+# returns: Playlist
+def playlist(playlist_id):
+    info, response_code = internal_spotify_call('GET', 'playlists/{}'.format(playlist_id))
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlist: {}'.format(info))
+        return False
+    return spotify_objects.playlist_from_json(info)
+
+def user(user_id):
+    info, response_code = internal_spotify_call('GET', 'users/{}'.format(user_id))
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch user: {}'.format(info))
+        return False
+    return spotify_objects.user_from_json(info)
+
+# returns: Array<Playlist>
+def users_playlists(user_id):
+    info, response_code = internal_spotify_call('GET', 'users/{user_id}/playlists'.format(user_id))
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlists: {}'.format(info))
+        return False
+    return [spotify_objects.playlist_from_json(playlist) for playlist in info['items']]
+
+# returns: User
+def populate_users_playlists(user):
+    user.playlists = users_playlists(user.id)
+    return user
+
+
 

@@ -10,13 +10,14 @@ def get_qr_info(code):
         return 'blah'
 
     if qrinfo.qrtype == qr.SPOTIFY_TRACK:
-        return render_spotify_track(qrinfo)
+        return redirect(url_for('track_info', track_id=qrinfo.uri))
     elif qrinfo.qrtype == qr.SPOTIFY_ALBUM:
-        return render_spotify_album(qrinfo)
+        return redirect(url_for('album_info', album_id=qrinfo.uri))
     elif qrinfo.qrtype == qr.SPOTIFY_ARTIST:
-        return render_spotify_artist(qrinfo)
+        return redirect(url_for('artist_info', artist_id=qrinfo.uri))
     elif qrinfo.qrtype == qr.SPOTIFY_PLAYLIST:
-        return render_spotify_playlist(qrinfo)
+        return redirect(url_for('playlist_info', playlist_id=qrinfo.uri))
+
     elif qrinfo.qrtype == qr.ONLINE_RADIO:
         radio_info_parts = qrinfo.uri.split('|')
         if len(radio_info_parts) != 2:
@@ -28,20 +29,13 @@ def get_qr_info(code):
             description = radio_info_parts[1]
         )
 
-def render_spotify_artist(qrinfo):
-    artist_id = qrinfo.uri
-    artist = spotify.artist(artist_id)
-    if not artist:
-        return 'dang'
-    related_artists = spotify.related_artists(artist_id)
-    top_tracks = spotify.top_tracks_of_artist(artist_id)
-    top_albums = spotify.top_albums_of_artist(artist_id)
-    return render_template(
-        'qr_info_artist.html',
-        image_url = qrinfo.image_url, 
-        title = artist.name,
-        albums = top_albums,
-        related_artists = related_artists,
-        tracks = top_tracks 
-    )
+@app.route('/s//play/QR<code>')
+def play_qr(code):
+    return 'HAH!'
+
+@app.route('/s//radio/QR<code>')
+def generate_radio(code):
+    return 'HAH'
+
+
 

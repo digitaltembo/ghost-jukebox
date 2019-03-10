@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}User: {{ user.name }}{% endblock %}
+{% block content %}
+    <img src="{{  image_url }}"/>
+    <h1>{{ user.name }}</h1>
+    <p>Playlists</p>
+    <ol>
+    {% for playlist in user.playlists %}
+        <li>{{ playlist.link }}</li>
+    {% endfor %}
+    </ol>
+{% endblock %}
