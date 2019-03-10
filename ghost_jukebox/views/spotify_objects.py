@@ -1,5 +1,5 @@
 import requests
-from ghost_jukebox.app import logger
+from ghost_jukebox import app
 from flask import url_for, Markup, escape
 
 class Artist:
@@ -37,7 +37,7 @@ def artist_from_json(info):
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except Exception:
-        logger.exception('Could not parse artist from {}')
+        app.logger.exception('Could not parse artist from {}')
         return False
 
 class Album:
@@ -89,7 +89,7 @@ def album_from_json(info):
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except Exception:
-        logger.exception('Could not parse album from {}')
+        app.logger.exception('Could not parse album from {}')
         return False
 
 class Track:
@@ -119,6 +119,8 @@ class Track:
         return url_for('track_info', track_id = self.id)
     def link(self):
         return Markup("<a href='{}' class='track-link'>{}</a>".format(self.url(), escape(self.name)))
+    def artist_links(self):
+        return [artist.link() for artist in self.artists]
 
 def track_from_json(info):
     try:
@@ -135,7 +137,7 @@ def track_from_json(info):
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except Exception:
-        logger.exception('Could not parse track from {}')
+        app.logger.exception('Could not parse track from {}')
         return False
 
 class Playlist:
@@ -174,7 +176,7 @@ def playlist_from_json(info):
             description = info['description'] if 'description' in info else None
         )
     except Exception:
-        logger.exception('Could not parse playlist from {}')
+        app.logger.exception('Could not parse playlist from {}')
         return False
 
 
@@ -207,7 +209,7 @@ def user_from_json(info):
             spotify_link = info['external_urls']['spotify'] if 'spotify' in info['external_urls'] else None
         )
     except Exception:
-        logger.exception('Could not parse user from {}')
+        app.logger.exception('Could not parse user from {}')
         return False
 
 class Image:
@@ -223,14 +225,14 @@ def image_from_json(info):
         height = int(info['height'])
         return Image(url, width, height)
     except Exception:
-        logger.exception('Could not parse image from {}')
+        app.logger.exception('Could not parse image from {}')
         return False
 
 class ImageSet:
     def __init__(self, images):
         self.images = images 
 
-    def get_by_size(self, width = None, target_height = None):
+    def get_by_size(self, target_width = None, target_height = None):
         width_delta = lambda img: abs(img.width - target_width)
         height_delta = lambda img: abs(img.height - target_height)
         delta = 100000
@@ -255,8 +257,9 @@ class ImageSet:
         return to_return
 
 def image_set_from_json(info):
-    return remove_empties([image_from_json(img) for img in info])
+    return ImageSet(remove_empties([image_from_json(img) for img in info]))
 
 def remove_empties(lizt):
-    return filter(lambda i: i, lizt)
+    return list(filter(lambda i: i, lizt))
+
 

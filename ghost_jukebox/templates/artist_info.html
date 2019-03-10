@@ -7,20 +7,20 @@
         Top Albums:
         <ul>
         {% for album in albums %}
-            <li>{{ album.link }}</li>
+            <li>{{ album.link() }}</li>
         {% endfor %}
         </ul>
         <br/>
         Top Tracks:
         <ul>
         {% for track in tracks %}
-            <li>{{ track.link }} <a href="{{ track.preview_url }}">Preview</a></li>
+            <li>{{ track.link() }} <a href="{{ track.preview_url }}">Preview</a></li>
         {% endfor %}
         </ul>
         Related Artists:
         <ul>
         {% for artist in related_artists %}
-            <li>{{ artist.link }}</li>
+            <li>{{ artist.link() }}</li>
         {% endfor %}
         </ul>
         <br/>

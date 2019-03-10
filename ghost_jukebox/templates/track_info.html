@@ -2,13 +2,9 @@
 {% block title %}Track: {{ track.name }}{% endblock %}
 {% block content %}
     <h1>{{ track.name }}</h1>
-    <h3>By {{ track.artist_links | join(', ') }}</h3>
+    <h3>By {{ track.artist_links() | join(', ') }}</h3>
     {% if track.album %}
-        <h3>Off of {{  track.album.link }}</h3>
+        <h3>Off of {{  track.album.link() }}</h3>
     {% endif %}
-    <ol>
-    {% for track in album.tracks %}
-        <li>{{ track.link }} <a href="{{ track.preview_url }}">Preview</a></li>
-    {% endfor %}
-    </ol>
 {% endblock %}
+
