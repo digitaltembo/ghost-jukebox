@@ -22,6 +22,7 @@ def artist_info(artist_id):
         'artist_info.html',
         image_url = get_image(artist.image_set),
         title = artist.name,
+        artist = artist,
         albums = top_albums,
         related_artists = related_artists,
         tracks = top_tracks 

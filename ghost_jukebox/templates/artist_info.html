@@ -7,38 +7,33 @@
                 <img src="{{  image_url }}"/>
             </div>
             <div class="col">
-                <h1>{{ title }} {{ artist.spotify_link_element() }}</h1>
+                <h1>{{ title }} {{ artist.spotify_link_elem() }}</h1>
             </div>
         </div>
         <div class="row">
             <div class="col">
-
-                <p>
-                    Top Albums:
-                    <ul>
-                    {% for album in albums %}
-                        <li>{{ album.link() }}</li>
-                    {% endfor %}
-                    </ul>
-                </p>
+                <h2>Top Albums:</h2>
+                <ul>
+                {% for album in albums %}
+                    <li>{{ album.link() }}</li>
+                {% endfor %}
+                </ul>
             </div>
             <div class="col">
-                Top Tracks:
+                <h2>Top Tracks:</h2>
                 <ul>
                 {% for track in tracks %}
                     <li>{{ track.link() }} {{ track.preview_element() }}</li>
                 {% endfor %}
                 </ul>
-
             </div>
             <div class="col">
-                Related Artists:
+                <h2>Related Artists:</h2>
                 <ul>
                 {% for artist in related_artists %}
                     <li>{{ artist.link() }}</li>
                 {% endfor %}
                 </ul>
-                <br/>
             </div>
         </div>
     </div>

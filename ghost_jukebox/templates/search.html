@@ -3,9 +3,47 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col">
-                <h1>SEARCH!</h1>
-            </div>
+            {% if search_results.artists %}
+                <div class="col">
+                    <h2>Artists</h2>
+                    <ul>
+                    {% for artist in search_results.artists %}
+                        <li>{{ artist.link() }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if search_results.albums %}
+                <div class="col">
+                    <h2>Albums</h2>
+                    <ul>
+                    {% for album in search_results.albums %}
+                        <li>{{ album.link() }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if search_results.tracks %}
+                <div class="col">
+                    <h2>Tracks</h2>
+                    <ul>
+                    {% for track in search_results.tracks %}
+                        <li>{{ track.link() }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if search_results.playlists %}
+                <div class="col">
+                    <h2>Playlists</h2>
+                    <ul>
+                    {% for playlist in search_results.playlists %}
+                        <li>{{ playlist.link() }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
+
     </div>
 {% endblock %}
