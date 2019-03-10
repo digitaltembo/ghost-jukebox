@@ -74,3 +74,18 @@ def user_info(user_id):
         image_url = get_image(user.image_set),
         user = user
     )
+
+@app.route('/s//search/<search_phrase>')
+def search(search_phrase):
+    if (search_phrase.strip()) == 0:
+        return render_template('search.html', phrase = "", results = None)
+    else:
+        search_results = spotify.search(search_phrase)
+        if not search_results:
+            return 'dang'
+        return render_template(
+            'search.html', 
+            phrase = search_phrase, 
+            results = search_results
+        )
+

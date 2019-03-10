@@ -1,29 +1,46 @@
 {% extends "base.html" %}
 {% block title %}Artist: {{ title }}{% endblock %}
 {% block content %}
-    <img src="{{  image_url }}"/>
-    <h1>{{ title }}</h1>
-    <p>
-        Top Albums:
-        <ul>
-        {% for album in albums %}
-            <li>{{ album.link() }}</li>
-        {% endfor %}
-        </ul>
-        <br/>
-        Top Tracks:
-        <ul>
-        {% for track in tracks %}
-            <li>{{ track.link() }} <a href="{{ track.preview_url }}">Preview</a></li>
-        {% endfor %}
-        </ul>
-        Related Artists:
-        <ul>
-        {% for artist in related_artists %}
-            <li>{{ artist.link() }}</li>
-        {% endfor %}
-        </ul>
-        <br/>
-    </p>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img src="{{  image_url }}"/>
+            </div>
+            <div class="col">
+                <h1>{{ title }} {{ artist.spotify_link_element() }}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+
+                <p>
+                    Top Albums:
+                    <ul>
+                    {% for album in albums %}
+                        <li>{{ album.link() }}</li>
+                    {% endfor %}
+                    </ul>
+                </p>
+            </div>
+            <div class="col">
+                Top Tracks:
+                <ul>
+                {% for track in tracks %}
+                    <li>{{ track.link() }} {{ track.preview_element() }}</li>
+                {% endfor %}
+                </ul>
+
+            </div>
+            <div class="col">
+                Related Artists:
+                <ul>
+                {% for artist in related_artists %}
+                    <li>{{ artist.link() }}</li>
+                {% endfor %}
+                </ul>
+                <br/>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

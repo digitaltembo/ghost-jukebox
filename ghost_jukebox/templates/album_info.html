@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Album: {{ album.name }}{% endblock %}
 {% block content %}
-    <img src="{{  image_url }}"/>
-    <h1>{{ album.name }}</h1>
-    <h3>By {{ album.artist_links() | join(', ') }}</h3>
-    <ol>
-    {% for track in album.tracks %}
-        <li><a href="{{ track.url }}">{{ track.name }}</a> <a href="{{ track.preview_url }}">Preview</a></li>
-    {% endfor %}
-    </ol>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img src="{{  image_url }}"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1>{{ album.name }}</h1>
+                <h3>By {{ album.artist_links() | join(', ') }}</h3>
+                <ol>
+                {% for track in album.tracks %}
+                    <li>{{ track.link() }} {{ track.preview_element() }}</li>
+                {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

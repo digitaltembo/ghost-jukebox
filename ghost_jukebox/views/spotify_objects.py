@@ -24,6 +24,8 @@ class Artist:
         return url_for('artist_info', artist_id = self.id)
     def link(self):
         return Markup("<a href='{}' class='artist-link'>{}</a>".format(self.url(), escape(self.name)))
+    def spotify_link_elem(self):
+        return Markup("<a href='{}'><i class='fas fa-external-link-alt'></i></a>".format(self.spotify_link))
 
 def artist_from_json(info):
     try:
@@ -37,7 +39,7 @@ def artist_from_json(info):
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except Exception:
-        app.logger.exception('Could not parse artist from {}')
+        app.logger.exception('Could not parse artist from {}'.format(str(info)))
         return False
 
 class Album:
@@ -89,7 +91,7 @@ def album_from_json(info):
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except Exception:
-        app.logger.exception('Could not parse album from {}')
+        app.logger.exception('Could not parse album from {}'.format(str(info)))
         return False
 
 class Track:
@@ -121,6 +123,11 @@ class Track:
         return Markup("<a href='{}' class='track-link'>{}</a>".format(self.url(), escape(self.name)))
     def artist_links(self):
         return [artist.link() for artist in self.artists]
+    def preview_element(self):
+        if self.preview_url:
+            return Markup("<audio controls><source src='{}'></audio>".format(self.preview_url))
+        else:
+            return None 
 
 def track_from_json(info):
     try:
@@ -137,7 +144,7 @@ def track_from_json(info):
             popularity = info['popularity'] if 'popularity' in info else None
         )
     except Exception:
-        app.logger.exception('Could not parse track from {}')
+        app.logger.exception('Could not parse track from {}'.format(str(info)))
         return False
 
 class Playlist:
@@ -176,7 +183,7 @@ def playlist_from_json(info):
             description = info['description'] if 'description' in info else None
         )
     except Exception:
-        app.logger.exception('Could not parse playlist from {}')
+        app.logger.exception('Could not parse playlist from {}'.format(str(info)))
         return False
 
 
@@ -209,7 +216,7 @@ def user_from_json(info):
             spotify_link = info['external_urls']['spotify'] if 'spotify' in info['external_urls'] else None
         )
     except Exception:
-        app.logger.exception('Could not parse user from {}')
+        app.logger.exception('Could not parse user from {}'.format(str(info)))
         return False
 
 class Image:
@@ -225,7 +232,7 @@ def image_from_json(info):
         height = int(info['height'])
         return Image(url, width, height)
     except Exception:
-        app.logger.exception('Could not parse image from {}')
+        app.logger.exception('Could not parse image from {}'.format(str(info)))
         return False
 
 class ImageSet:
@@ -261,5 +268,28 @@ def image_set_from_json(info):
 
 def remove_empties(lizt):
     return list(filter(lambda i: i, lizt))
+
+class SearchResults:
+    def __init__(
+        self,
+        tracks,
+        albums,
+        artists,
+        playlists 
+    ):
+        self.tracks    = tracks
+        self.albums    = albums
+        self.artists   = artists
+        self.playlists = playlists
+def search_results_from_json(info):
+    try:
+        return SearchResults(
+            tracks = remove_empties([track_from_json(track) for track in info['tracks']['items']]) if 'tracks' in info else [],
+            albums = remove_empties([track_from_json(album) for album in info['albums']['items']]) if 'albums' in info else [],
+            artists = remove_empties([track_from_json(artist) for artist in info['artists']['items']]) if 'artists' in info else [],
+            playlists = remove_empties([track_from_json(playlist) for playlist in info['playlists']['items']]) if 'playlists' in info else []
+        )
+    except Exception:
+        app.logger.exception('Could not parse search results from {}'.format(str(info)))
 
 

@@ -4,6 +4,7 @@ from time import sleep
 from datetime import datetime, timedelta
 import requests
 from requests.auth import HTTPBasicAuth
+from urllib.parse import quote
 
 from ghost_jukebox import app, auth, conf
 from ghost_jukebox.models import info 
@@ -130,26 +131,24 @@ def set_token_from_json(token_json):
     info.set_info_dict(info_dict)
 
 
-def internal_spotify_call(method, endpoint):
+def internal_spotify_call(method, endpoint, params={}):
     access_token = get_access_token()
     if not access_token:
         return 'blah'
     headers = {"Authorization": "Bearer {}".format(access_token)}
 
-    index = request.url.find('?')
-    get_parameters = '' if index == -1 else request.url[index:]
-    url = spotify_url(endpoint) + get_parameters
+    url = spotify_url(endpoint)
 
     response = None
 
     if method == 'POST':
-        response = requests.post(url, data=request.get_json(), headers=headers)
+        response = requests.post(url, params=params, headers=headers)
     elif method == 'GET':
-        response = requests.get(url, data=request.get_json(), headers=headers)
+        response = requests.get(url, params=params, headers=headers)
     elif method == 'PUT':
-        response = requests.put(url, data=request.get_json(), headers=headers)
+        response = requests.put(url, params=params, headers=headers)
     elif method == 'DELETE':
-        response = requests.delete(url, data=request.get_json(), headers=headers)
+        response = requests.delete(url, params=params, headers=headers)
     
     if response == None:
         app.logger.error('Invalid spotify request')
@@ -235,5 +234,21 @@ def populate_users_playlists(user):
     user.playlists = users_playlists(user.id)
     return user
 
+SEARCH_ALBUM    = 'album'
+SEARCH_ARTIST   = 'artist'
+SEARCH_PLAYLIST = 'playlist'
+SEARCH_TRACK    = 'track'
+ALL_SEARCHES = [SEARCH_ALBUM, SEARCH_ARTIST, SEARCH_PLAYLIST, SEARCH_TRACK]
+# returns: SearchResults
+def search(search, search_types = ALL_SEARCHES):
+    params = {
+        'q': search,
+        'type': ','.join(filter(lambda search_type: search_type in ALL_SEARCHES, search_types))
+    }
+    info, response_code = internal_spotify_call('GET', 'search', params=params)
+    if not info or response_code != 200:
+        app.logger.error('Failed to search: {}'.format(search))
+        return False
+    return spotify_objects.search_results_from_json(info)
 
 

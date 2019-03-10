@@ -12,9 +12,10 @@ def get_filename_from_cd(cd):
     return fname[0]
 
 # This will download the image into the static folder
-def download_image(image):
+def download_image(image, filename = None):
     response = requests.get(url, allow_redirects=True)
-    filename = get_filename_from_cd(response.headers.get('content-disposition'))
-    filename = filename if filename else url.split('/')[-1]
+    if not filename:
+        filename = get_filename_from_cd(response.headers.get('content-disposition'))
+        filename = filename if filename else url.split('/')[-1]
     destination_path = os.path.join(app.instance_path, 'static', 'imgs', filename)
     with open(destination_path, 'wb').write(response.content)
