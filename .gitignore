@@ -1,3 +1,4 @@
 *.pyc
 ghost_jukebox/imgs/*
 ghost_jukebox.egg-info/*
+venv/*
