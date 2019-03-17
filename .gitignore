@@ -2,4 +2,4 @@
 ghost_jukebox/imgs/*
 ghost_jukebox.egg-info/*
 venv/*
-static/qr_codes/*
+ghost_jukebox/static/qr_codes/*
