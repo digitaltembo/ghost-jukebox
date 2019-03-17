@@ -1,6 +1,7 @@
 from ghost_jukebox import app
 import re
 import requests
+import os
 
 # get filename from content-disposition header
 def get_filename_from_cd(cd):
@@ -12,13 +13,14 @@ def get_filename_from_cd(cd):
     return fname[0]
 
 # This will download the image into the static folder
-def download_image(image, path, filename = None):
-    response = requests.get(url, allow_redirects=True)
+def download_image(image_url, path, filename = None):
+    response = requests.get(image_url, allow_redirects=True)
     if not filename:
         filename = get_filename_from_cd(response.headers.get('content-disposition'))
         filename = filename if filename else url.split('/')[-1]
     destination_path = os.path.join(path, filename)
-    with open(destination_path, 'wb').write(response.content)
+    with open(destination_path, 'wb') as file:
+        file.write(response.content)
     return filename
 
 def save_file(request, name, path):

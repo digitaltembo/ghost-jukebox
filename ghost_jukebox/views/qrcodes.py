@@ -14,6 +14,12 @@ from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from qrcode.constants import ERROR_CORRECT_Q
 import os
 
+# The images we generate are meant to fit on a standard CR-80 PVC ID Card
+# Which has these dimensions in portrait
+PATTERN_WIDTH = 638
+PATTERN_HEIGHT = 1012
+
+
 # Types:
 SPOTIFY_TRACK    = 0
 SPOTIFY_ALBUM    = 1
@@ -31,16 +37,16 @@ def get_qr_info(code):
     if not qrinfo:
         return 'blah'
 
-    if qrinfo.qrtype == qr.SPOTIFY_TRACK:
+    if qrinfo.qrtype == SPOTIFY_TRACK:
         return redirect(url_for('track_info', track_id=qrinfo.uri))
-    elif qrinfo.qrtype == qr.SPOTIFY_ALBUM:
+    elif qrinfo.qrtype == SPOTIFY_ALBUM:
         return redirect(url_for('album_info', album_id=qrinfo.uri))
-    elif qrinfo.qrtype == qr.SPOTIFY_ARTIST:
+    elif qrinfo.qrtype == SPOTIFY_ARTIST:
         return redirect(url_for('artist_info', artist_id=qrinfo.uri))
-    elif qrinfo.qrtype == qr.SPOTIFY_PLAYLIST:
+    elif qrinfo.qrtype == SPOTIFY_PLAYLIST:
         return redirect(url_for('playlist_info', playlist_id=qrinfo.uri))
 
-    elif qrinfo.qrtype == qr.ONLINE_RADIO:
+    elif qrinfo.qrtype == ONLINE_RADIO:
         radio_info_parts = qrinfo.uri.split('|')
         if len(radio_info_parts) != 2:
             return 'blah'
@@ -78,34 +84,57 @@ def make_qr():
     image_url = request.form.get('image_url')
     app.logger.info("Making QR code from {}, {}, {}".format(qrtype, id, image_url))
     final_filename = False
-    saved = common.download_image(image_url, qrdir, 'cover')
+    saved = common.download_image(image_url, qrdir)
     if not saved:
         return create_qr(errors='Fully specify the form!')
+    cover_img = Image.open(os.join(qrdir, saved))
 
-    qrinfo = qr.QRInfo(code, qrtype, id, final_filename)
+    qrinfo = qr.QRInfo(code, qrtype, id, saved)
     qr.insert(qrinfo)
+    qr_image = get_qr_image(code)
+    create_card_pattern(qr_image, cover_img, code, 'blah')
+    retur redirect(url_for('view_qr', code=code))
+
+@app.route('/s//QR<code>/view')
+    return redirect(url_for('static', filename='qr_codes/qr{0:04d}/final.jpg'.format(code)))
+
+
 
 def qr_dir(code):
-    return "/home/pi/server/ghost_jukebox/static/qrcodes/QR{}".format(code)
+    return "/home/pi/server/ghost_jukebox/static/qr_codes/qr{0:04d}".format(code)
+"""
+So: it turns out that the Raspberry Pi is pretty bad at the qr code generation
+I pregenerated 1000 qr codes using this code:
 
+    from qrcode.main import make, QRCode
+    from qrcode.image.styledpil import *
+    from qrcode.image.styles.colormasks import *
+    from qrcode.image.styles.moduledrawers import *
+    from qrcode.constants import ERROR_CORRECT_Q
+
+    def make_code(code):
+        qr = QRCode(error_correction=ERROR_CORRECT_Q)
+        qr.add_data("https://jukebox.of.nolanhawk.in/s//QR{0:04d}".format(code))
+        qr_image = qr.make_image(
+            image_factory=StyledPilImage, 
+            module_drawer=RoundedModuleDrawer(), 
+            color_mask=RadialGradiantColorMask(center_color = PURPLE_RGBs, edge_color = (0,0,0)),
+            image_path="/Users/nhawkins/Downloads/ghost2.png"
+        )
+        d = '../ghost-jukebox/ghost_jukebox/static/qr_codes/qr{0:04d}'.format(code)
+        os.mkdir(d)
+        qr_image.save("{}/qr_code.jpg".format(d))
+        return qr_image
+
+
+    for i in range(1, 1000):
+        make_code()
+"""
 def get_qr_image(code):
-    qr = QRCode(error_correction=ERROR_CORRECT_Q)
-    qr.add_data("https://jukebox.of.nolanhawk.in/s//QR" + code)
-    qr_image = qr.make_image(
-        image_factory=StyledPilImage, 
-        module_drawer=RoundedModuleDrawer(), 
-        color_mask=RadialGradiantColorMask(center_color = common.PURPLE_RGB, edge_color = (0,0,0)),
-        image_path="/home/pi/server/ghost_jukebox/static/ghost.png"
-    )
-    filename = qr_dir(code) + "/qr.png"
+    filename = qr_dir(code) + "/qr_code.png"
 
-    qr_image.save(filename)
-    return qr_image, filename
-
-PATTERN_WIDTH = 638
-PATTERN_HEIGHT = 1012
-
-
+    qr_image.open(filename)
+    return qr_image
  
 def text_wrap(text, font, max_width):
     lines = []
@@ -157,7 +186,7 @@ def create_card_pattern(qr_code_img, cover_img, number, text):
     for line in text_wrap(text, font, PATTERN_WIDTH - 60):
         offset = offset + 15
         backdraw.text((PATTERN_WIDTH + 30, qr_code_bottom + offset), line, font=font, fill=(0,0,0))
-    card.save(qr_dir(code) + "/final.png")
+    card.save(qr_dir(number) + "/final.jpg")
 
 
 
