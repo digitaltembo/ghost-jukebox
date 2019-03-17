@@ -3,10 +3,10 @@
 {% block content %}
     <img src="{{  image_url }}"/>
     <h1>{{ playlist.name }}</h1>
-    <h3>Created By {{ playlist.owner.link }}</h3>
+    <h3>Created By {{ playlist.owner.link() }}</h3>
     <ol>
     {% for track in playlist.tracks %}
-        <li>{{ track.link }} <a href="{{ track.preview_url }}">Preview</a></li>
+        <li>{{ track.link() }} {{ track.preview_element() }}</li>
     {% endfor %}
     </ol>
 {% endblock %}

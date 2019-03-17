@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <h1>Create QR Card</h1>
+    <form action="{{ url_of('make_qr') }}">
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Type of Card</legend>
+                <div class="col-sm-10">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qr_type" value="0" id="qr_type_0">
+                        <label class="form-check-label" for="qr_type_0">
+                            Spotify Track
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qr_type" value="1" id="qr_type_1">
+                        <label class="form-check-label" for="qr_type_1">
+                            Spotify Album
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qr_type" value="2" id="qr_type_2">
+                        <label class="form-check-label" for="qr_type_2">
+                            Spotify Artist
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qr_type" value="3" id="qr_type_3">
+                        <label class="form-check-label" for="qr_type_3">
+                            Spotify Playlist
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="qr_type" value="4" id="qr_type_4">
+                        <label class="form-check-label" for="qr_type_4">
+                            Online Radio
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group row">
+            <label for="qr_id" class="col-sm-2 col-form-label">Item ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="qr_id" placeholder="Item ID">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Cover Image</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="image_path" placeholder="Image URL">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}

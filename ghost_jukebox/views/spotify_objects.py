@@ -26,6 +26,15 @@ class Artist:
         return Markup("<a href='{}' class='artist-link'>{}</a>".format(self.url(), escape(self.name)))
     def spotify_link_elem(self):
         return Markup("<a href='{}'><i class='fas fa-external-link-alt'></i></a>".format(self.spotify_link))
+    def qr_url(self):
+        return url_for(
+            'make_qr', 
+            qr_type = qr.SPOTIFY_ARTIST, 
+            qr_id = self.id, 
+            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+        )
+    def qr_link(self):
+        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def artist_from_json(info):
     try:
@@ -74,6 +83,15 @@ class Album:
         return Markup("<a href='{}' class='album-link'>{}</a>".format(self.url(), escape(self.name)))
     def artist_links(self):
         return [artist.link() for artist in self.artists]
+    def qr_url(self):
+        return url_for(
+            'make_qr', 
+            qr_type = qr.SPOTIFY_ALBUM, 
+            qr_id = self.id, 
+            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+        )
+    def qr_link(self):
+        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def album_from_json(info):
     try:
@@ -125,9 +143,21 @@ class Track:
         return [artist.link() for artist in self.artists]
     def preview_element(self):
         if self.preview_url:
-            return Markup("<audio controls><source src='{}'></audio>".format(self.preview_url))
+            return Markup("""<audio id='audio-{}'><source src='{}'></audio>
+                <span class='audio-controller play' id='audioControl-{}'>
+                    <i class='far fa-play-circle'></i>
+                </span>""".format(self.id, self.preview_url, self.id))
         else:
-            return None 
+            return "" 
+    def qr_url(self):
+        return url_for(
+            'make_qr', 
+            qr_type = qr.SPOTIFY_TRACK, 
+            qr_id = self.id, 
+            image_url = self.album.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+        )
+    def qr_link(self):
+        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def track_from_json(info):
     try:
@@ -170,16 +200,25 @@ class Playlist:
         return url_for('playlist_info', playlist_id = self.id)
     def link(self):
         return Markup("<a href='{}' class='playlist-link'>{}</a>".format(self.url(), escape(self.name)))
+    def qr_url(self):
+        return url_for(
+            'make_qr', 
+            qr_type = qr.SPOTIFY_PLAYLIST, 
+            qr_id = self.id, 
+            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+        )
+    def qr_link(self):
+        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def playlist_from_json(info):
     try:
         return Playlist(
             id = info['id'],
             name = info['name'],
-            ownder = user_from_json(info['owner']),
+            owner = user_from_json(info['owner']),
             spotify_link = info['external_urls']['spotify'] if 'spotify' in info['external_urls'] else None,
             image_set = image_set_from_json(info['images']) if 'images' in info else None,
-            tracks = remove_empties([track_from_json(playlist_track['track']) for playlist_track in info['tracks']['items']]) if 'tracks' in info else [],
+            tracks = remove_empties([track_from_json(playlist_track['track']) for playlist_track in info['tracks']['items']]) if 'tracks' in info and 'items' in info['tracks'] else [],
             description = info['description'] if 'description' in info else None
         )
     except Exception:
@@ -228,8 +267,8 @@ class Image:
 def image_from_json(info):
     try:
         url = info['url']
-        width = int(info['width'])
-        height = int(info['height'])
+        width = int(info['width']) if 'width' in info and info['width'] else 0
+        height = int(info['height']) if 'height' in info and info['height']  else 0
         return Image(url, width, height)
     except Exception:
         app.logger.exception('Could not parse image from {}'.format(str(info)))
@@ -285,9 +324,9 @@ def search_results_from_json(info):
     try:
         return SearchResults(
             tracks = remove_empties([track_from_json(track) for track in info['tracks']['items']]) if 'tracks' in info else [],
-            albums = remove_empties([track_from_json(album) for album in info['albums']['items']]) if 'albums' in info else [],
-            artists = remove_empties([track_from_json(artist) for artist in info['artists']['items']]) if 'artists' in info else [],
-            playlists = remove_empties([track_from_json(playlist) for playlist in info['playlists']['items']]) if 'playlists' in info else []
+            albums = remove_empties([album_from_json(album) for album in info['albums']['items']]) if 'albums' in info else [],
+            artists = remove_empties([artist_from_json(artist) for artist in info['artists']['items']]) if 'artists' in info else [],
+            playlists = remove_empties([playlist_from_json(playlist) for playlist in info['playlists']['items']]) if 'playlists' in info else []
         )
     except Exception:
         app.logger.exception('Could not parse search results from {}'.format(str(info)))

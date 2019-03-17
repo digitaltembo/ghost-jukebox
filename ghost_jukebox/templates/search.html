@@ -3,44 +3,53 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            {% if search_results.artists %}
+            {% if results %}
+                {% if results.artists %}
+                    <div class="col">
+                        <h2>Artists</h2>
+                        <ul>
+                        {% for artist in results.artists %}
+                            <li>{{ artist.link() }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if results.albums %}
+                    <div class="col">
+                        <h2>Albums</h2>
+                        <ul>
+                        {% for album in results.albums %}
+                            <li>{{ album.link() }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if results.tracks %}
+                    <div class="col">
+                        <h2>Tracks</h2>
+                        <ul>
+                        {% for track in results.tracks %}
+                            <li>{{ track.link() }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if results.playlists %}
+                    <div class="col">
+                        <h2>Playlists</h2>
+                        <ul>
+                        {% for playlist in results.playlists %}
+                            <li>{{ playlist.link() }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% else %}
                 <div class="col">
-                    <h2>Artists</h2>
-                    <ul>
-                    {% for artist in search_results.artists %}
-                        <li>{{ artist.link() }}</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% if search_results.albums %}
-                <div class="col">
-                    <h2>Albums</h2>
-                    <ul>
-                    {% for album in search_results.albums %}
-                        <li>{{ album.link() }}</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% if search_results.tracks %}
-                <div class="col">
-                    <h2>Tracks</h2>
-                    <ul>
-                    {% for track in search_results.tracks %}
-                        <li>{{ track.link() }}</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% if search_results.playlists %}
-                <div class="col">
-                    <h2>Playlists</h2>
-                    <ul>
-                    {% for playlist in search_results.playlists %}
-                        <li>{{ playlist.link() }}</li>
-                    {% endfor %}
-                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
                 </div>
             {% endif %}
         </div>

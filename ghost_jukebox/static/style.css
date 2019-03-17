@@ -1,5 +1,4 @@
 body {
-    margin:40px auto;
     line-height:1.6;
     font-size:18px;
     color:#444;
@@ -8,4 +7,13 @@ body {
 
 h1,h2,h3 {
     line-height:1.2;
+}
+.btn-outline-success{
+    color: #ab00ff;
+    border-color: #ab00ff;
+}
+.btn-outline-success:hover{
+    color:#fff;
+    background-color: #ab00ff;
+    border-color: #ab00ff;
 }

@@ -5,32 +5,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"/>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"/>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+
     <title>{% block title %}{% endblock %} - Ghost Jukebox</title>
     {% endblock %}
 </head>
 <body>
     <div id="header">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="#">Ghost Jukebox</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
+            <img src="{{ url_for('static', filename='favicon.ico') }}"/>
+            <a class="navbar-brand" href="#">Ghost Jukebox</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="/s">Home <span class="sr-only">(current)</span></a>
-              </li>
-            <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-          </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/s">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0" id="search-form">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search-bar">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
         </nav>
     </div>
 
@@ -40,5 +43,42 @@
         {% block footer %}
         {% endblock %}
     </div>
+    <script>
+        function processForm(e) {
+            if (e.preventDefault) e.preventDefault();
+
+            window.location.href = "/s//search/" + encodeURI(document.getElementById('search-bar').value);
+            
+            return false;
+        }
+
+        var form = document.getElementById('search-form');
+        if (form.attachEvent) {
+            form.attachEvent("submit", processForm);
+        } else {
+            form.addEventListener("submit", processForm);
+        }
+
+        var playButtons = document.getElementsByClassName('audio-controller');
+        for(var i=0; i < playButtons.length; i++){
+            playButtons[i].onclick = function (event) {
+                var button = event.targetElement.parentNode;
+                // Update the Button
+                console.log(elem);
+                if(button.classList.contains("play")){
+                    button.innerHTML = "<i class='far fa-pause-circle'></i>";
+                    document.getElementById(button.id.replace('audioControl', 'audio')).play();
+                    button.classList.replace("play","pause");
+                } else {
+                    button.innerHTML = "<i class='far fa-play-circle'></i>";
+                    document.getElementById(button.id.replace('audioControl', 'audio')).pause();
+                    button.classList.replace("pause","play");
+                }
+
+                // Prevent Default Action
+                return false;
+            };
+        }
+    </script>
 </body>
 </html>
