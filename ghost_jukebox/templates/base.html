@@ -62,9 +62,8 @@
         var playButtons = document.getElementsByClassName('audio-controller');
         for(var i=0; i < playButtons.length; i++){
             playButtons[i].onclick = function (event) {
-                var button = event.targetElement.parentNode;
+                var button = event.target.parentNode;
                 // Update the Button
-                console.log(elem);
                 if(button.classList.contains("play")){
                     button.innerHTML = "<i class='far fa-pause-circle'></i>";
                     document.getElementById(button.id.replace('audioControl', 'audio')).play();
