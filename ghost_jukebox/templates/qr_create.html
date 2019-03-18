@@ -2,7 +2,7 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
     <h1>Create QR Card</h1>
-    <form action="{{ url_of('make_qr') }}">
+    <form action="{{ url_for('make_qr') }}">
         <fieldset class="form-group">
             <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">Type of Card</legend>

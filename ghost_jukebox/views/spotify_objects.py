@@ -1,5 +1,6 @@
 import requests
 from ghost_jukebox import app
+from ghost_jukebox.views import qrcodes
 from flask import url_for, Markup, escape
 
 class Artist:
@@ -29,12 +30,13 @@ class Artist:
     def qr_url(self):
         return url_for(
             'make_qr', 
-            qr_type = qr.SPOTIFY_ARTIST, 
+            qr_type = qrcodes.SPOTIFY_ARTIST, 
             qr_id = self.id, 
-            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            text = '{} (Artist)'.format(self.name)
         )
     def qr_link(self):
-        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def artist_from_json(info):
     try:
@@ -86,12 +88,13 @@ class Album:
     def qr_url(self):
         return url_for(
             'make_qr', 
-            qr_type = qr.SPOTIFY_ALBUM, 
+            qr_type = qrcodes.SPOTIFY_ALBUM, 
             qr_id = self.id, 
-            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            text = '{} (from {})'.format(self.name, ', '.join([a.name for a in self.artists]))
         )
     def qr_link(self):
-        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def album_from_json(info):
     try:
@@ -152,12 +155,13 @@ class Track:
     def qr_url(self):
         return url_for(
             'make_qr', 
-            qr_type = qr.SPOTIFY_TRACK, 
+            qr_type = qrcodes.SPOTIFY_TRACK, 
             qr_id = self.id, 
-            image_url = self.album.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+            image_url = self.album.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            text = '{} (from {})'.format(self.name, ', '.join([a.name for a in self.artists]))
         )
     def qr_link(self):
-        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def track_from_json(info):
     try:
@@ -203,12 +207,13 @@ class Playlist:
     def qr_url(self):
         return url_for(
             'make_qr', 
-            qr_type = qr.SPOTIFY_PLAYLIST, 
+            qr_type = qrcodes.SPOTIFY_PLAYLIST, 
             qr_id = self.id, 
-            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH)
+            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            text = '{} (created by {})'.format(self.name, self.owner.name)
         )
     def qr_link(self):
-        return Markup("<a href='{}'><i class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
 
 def playlist_from_json(info):
     try:

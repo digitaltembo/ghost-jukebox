@@ -5,7 +5,7 @@ from ghost_jukebox.views import spotify
 from werkzeug.utils import secure_filename
 import requests
 import qrcode
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 from qrcode.main import make, QRCode
 from qrcode.image.styledpil import *
@@ -66,42 +66,47 @@ def generate_radio(code):
     return 'HAH'
 
 @app.route('/s//QR/form-create')
-def create_qr():
+def create_qr(errors=[]):
     return render_template(
         'qr_create.html'
     )
 
 @app.route('/s//QR/create', methods=['GET'])
 def make_qr():
-    qrtype = request.form.get('qr_type')
-    id     = request.form.get('qr_id')
-    if not qrtpe or not id:
+    app.logger.info('Making the QR')
+    qrtype = request.args.get('qr_type')
+    id     = request.args.get('qr_id')
+    text   = request.args.get('text')
+    if not qrtype or not id or not text:
         return create_qr(errors='Fully specify the form!')
 
-    code   = qr.get_next_code()
-    qrdir    = qr_dir(code)
-    os.mkdir(qrdir)
-    image_url = request.form.get('image_url')
+    code_str = qr.get_next_code()
+    qrdir    = qr_dir(code_str)
+    image_url = request.args.get('image_url')
     app.logger.info("Making QR code from {}, {}, {}".format(qrtype, id, image_url))
     final_filename = False
     saved = common.download_image(image_url, qrdir)
     if not saved:
         return create_qr(errors='Fully specify the form!')
-    cover_img = Image.open(os.join(qrdir, saved))
+    cover_img = Image.open(os.path.join(qrdir, saved))
 
-    qrinfo = qr.QRInfo(code, qrtype, id, saved)
+    qrinfo = qr.QRInfo(code_str, qrtype, id, saved)
     qr.insert(qrinfo)
-    qr_image = get_qr_image(code)
-    create_card_pattern(qr_image, cover_img, code, 'blah')
-    retur redirect(url_for('view_qr', code=code))
+    qr_image = get_qr_image(code_str)
+    create_card_pattern(qr_image, cover_img, code_str, text)
+    return redirect(url_for('view_qr', code_str=code_str))
 
-@app.route('/s//QR<code>/view')
-    return redirect(url_for('static', filename='qr_codes/qr{0:04d}/final.jpg'.format(code)))
+@app.route('/s//QR<code_str>/view')
+def view_qr(code_str):
+    return render_template(
+        'qr_view.html',
+        image_path=url_for('static', filename='qr_codes/qr{}/final.jpg'.format(code_str))
+    )
 
 
 
-def qr_dir(code):
-    return "/home/pi/server/ghost_jukebox/static/qr_codes/qr{0:04d}".format(code)
+def qr_dir(code_str):
+    return "/home/pi/server/ghost_jukebox/static/qr_codes/qr{}".format(code_str)
 """
 So: it turns out that the Raspberry Pi is pretty bad at the qr code generation
 I pregenerated 1000 qr codes using this code:
@@ -130,10 +135,10 @@ I pregenerated 1000 qr codes using this code:
     for i in range(1, 1000):
         make_code()
 """
-def get_qr_image(code):
-    filename = qr_dir(code) + "/qr_code.png"
+def get_qr_image(code_str):
+    filename = qr_dir(code_str) + "/qr_code.jpg"
 
-    qr_image.open(filename)
+    qr_image = Image.open(filename)
     return qr_image
  
 def text_wrap(text, font, max_width):
@@ -161,38 +166,93 @@ def text_wrap(text, font, max_width):
             lines.append(line)    
     return lines
 
-def create_card_pattern(qr_code_img, cover_img, number, text):
+def create_card_pattern(qr_code_img, cover_img, code_str, text):
     card = Image.new("RGB", (PATTERN_WIDTH * 2, PATTERN_HEIGHT), (255,255,255))
 
     cover_width, cover_height = cover_img.size
-    cover = cover.resize((PATTERN_WIDTH, cover_height * PATTERN_WIDTH / cover_width), Image.LACZOS)
+    cover_img = cover_img.resize((PATTERN_WIDTH, int(cover_height * PATTERN_WIDTH / cover_width)), Image.LANCZOS)
     cover_width, cover_height = cover_img.size
-    front.paste(cover_img, (0, (PATTERN_HEIGHT - cover_height) / 2))
+    card.paste(cover_img, (0, int((PATTERN_HEIGHT - cover_height) / 2)))
 
     qr_code_width, qr_code_height = qr_code_img.size 
-    qr_code_img = qr_code_img.resize((PATTERN_WIDTH, qr_code_height * PATTERN_WIDTH / qr_code_width), Image.LACZOS)
+    qr_code_img = qr_code_img.resize((PATTERN_WIDTH, int(qr_code_height * PATTERN_WIDTH / qr_code_width)), Image.LANCZOS)
     qr_code_width, qr_code_height = qr_code_img.size 
-    qr_code_top = (PATTERN_HEIGHT - qr_code_height) / 2
-    qr_code_bottom = (PATTERN_HEIGHT + qr_code_height) / 2
-    back.paste(qr_code_img, (PATTERN_WIDTH, qr_code_top))
-    backdraw = ImageDraw.Draw(back)
+    qr_code_top = int((PATTERN_HEIGHT - qr_code_height) / 2)
+    qr_code_bottom = int((PATTERN_HEIGHT + qr_code_height) / 2)
+    card.paste(qr_code_img, (PATTERN_WIDTH, qr_code_top))
+    carddraw = ImageDraw.Draw(card)
+
+    # Draw the text "QR####" on top of the qr code
+    text_box(
+        'QR{}'.format(code_str), 
+        carddraw, 
+        ImageFont.truetype(FONT_PATH, size=16, encoding="unic"),
+        (PATTERN_WIDTH + 60, qr_code_top, PATTERN_WIDTH - 120, 20),
+        horizontal_allignment = ALLIGNMENT_CENTER,
+        vertical_allignment = ALLIGNMENT_BOTTOM,
+        fill=(0,0,0)
+    )
+    # Draw the text for the given card under the qr code
+    text_box(
+        text, 
+        carddraw, 
+        ImageFont.truetype(FONT_PATH, size=32, encoding="unic"),
+        (PATTERN_WIDTH + 60, qr_code_bottom, PATTERN_WIDTH - 120, 20),
+        horizontal_allignment = ALLIGNMENT_CENTER,
+        vertical_allignment = ALLIGNMENT_BOTTOM,
+        fill=(0,0,0)
+    )
+    card.save(qr_dir(code_str) + "/final.jpg")
 
 
-    font_file_path = '/home/pi/.fonts/Avenir-Medium.ttf'
-    font = ImageFont.truetype(font_file_path, size=16, encoding="unic")
+def font(font_path, size):
+    return ImageFont.truetype(font_path, size=size, encoding="unic")
 
-    backdraw.text((PATTERN_WIDTH + 30, qr_code_bottom + 30), "QR{}".format(number), font=font, fill=(0,0,0))
-    offset = 30
-    for line in text_wrap(text, font, PATTERN_WIDTH - 60):
-        offset = offset + 15
-        backdraw.text((PATTERN_WIDTH + 30, qr_code_bottom + offset), line, font=font, fill=(0,0,0))
-    card.save(qr_dir(number) + "/final.jpg")
-
-
-
-
-
-
+ALLIGNMENT_LEFT = 0
+ALLIGNMENT_CENTER = 1
+ALLIGNMENT_RIGHT = 2
+ALLIGNMENT_TOP = 3
+ALLIGNMENT_BOTTOM = 4
+def text_box(text, image_draw, font, box, horizontal_allignment = ALLIGNMENT_LEFT, vertical_allignment = ALLIGNMENT_TOP, **kwargs):
+    x = box[0]
+    y = box[1]
+    width = box[2]
+    height = box[3]
+    lines = text.split('\n')
+    true_lines = []
+    for line in lines:
+        if font.getsize(line)[0] <= width:
+            true_lines.append(line) 
+        else:
+            current_line = ''
+            for word in line.split(' '):
+                if font.getsize(current_line + word)[0] <= width:
+                    current_line += ' ' + word 
+                else:
+                    true_lines.append(current_line)
+                    current_line = word 
+            true_lines.append(current_line)
+    
+    x_offset = y_offset = 0
+    lineheight = font.getsize(true_lines[0])[1] * 1.2 # Give a margin of 0.2x the font height
+    if vertical_allignment == ALLIGNMENT_CENTER:
+        y_offset = - (len(true_lines) * lineheight) / 2
+    elif vertical_allignment == ALLIGNMENT_BOTTOM:
+        y_offset = - (len(true_lines) * lineheight)
+    
+    for line in true_lines:
+        linewidth = font.getsize(line)[0]
+        if horizontal_allignment == ALLIGNMENT_CENTER:
+            x_offset = (width - linewidth) / 2
+        elif horizontal_allignment == ALLIGNMENT_RIGHT:
+            x_offset = width - linewidth
+        image_draw.text(
+            (int(x + x_offset), int(y + y_offset)),
+            line,
+            font=font,
+            **kwargs
+        )
+        y_offset += lineheight
 
 
 
