@@ -10,5 +10,5 @@ CREATE TABLE qr_codes(
     code TEXT,
     type INT,
     uri TEXT,
-    image_file TEXT
+    title TEXT
 );

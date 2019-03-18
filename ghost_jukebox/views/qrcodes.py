@@ -13,11 +13,28 @@ from qrcode.image.styles.colormasks import RadialGradiantColorMask
 from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from qrcode.constants import ERROR_CORRECT_Q
 import os
+import math
 
 # The images we generate are meant to fit on a standard CR-80 PVC ID Card
 # Which has these dimensions in portrait
 PATTERN_WIDTH = 638
 PATTERN_HEIGHT = 1012
+CARD_WIDTH = PATTERN_WIDTH * 2
+CARD_HEIGHT = PATTERN_HEIGHT
+
+CARD_MARGIN = 300
+
+PAPER_WIDTH = 85 * 30
+PAPER_HEIGHT = 110 * 30
+
+
+
+CARD_LOCATIONS = [
+    ( int((PAPER_HEIGHT - CARD_MARGIN) / 2 - CARD_WIDTH), int((PAPER_WIDTH - CARD_MARGIN) / 2 - CARD_HEIGHT) ),
+    ( int((PAPER_HEIGHT + CARD_MARGIN) / 2),              int((PAPER_WIDTH - CARD_MARGIN) / 2 - CARD_HEIGHT) ),
+    ( int((PAPER_HEIGHT - CARD_MARGIN) / 2 - CARD_WIDTH), int((PAPER_WIDTH + CARD_MARGIN) / 2)               ),
+    ( int((PAPER_HEIGHT + CARD_MARGIN) / 2),              int((PAPER_WIDTH + CARD_MARGIN) / 2)               )
+]
 
 
 # Types:
@@ -90,7 +107,7 @@ def make_qr():
         return create_qr(errors='Fully specify the form!')
     cover_img = Image.open(os.path.join(qrdir, saved))
 
-    qrinfo = qr.QRInfo(code_str, qrtype, id, saved)
+    qrinfo = qr.QRInfo(code_str, qrtype, id, text)
     qr.insert(qrinfo)
     qr_image = get_qr_image(code_str)
     create_card_pattern(qr_image, cover_img, code_str, text)
@@ -104,8 +121,60 @@ def view_qr(code_str):
     )
 
 
+def split_list(liszt, max_size):
+    return [
+        liszt[i*max_size : i*max_size + max_size] 
+        for i in range(int(math.ceil(float(len(liszt))/max_size)))
+    ]
 
-def qr_dir(code_str):
+@app.route('/s//QRCards.pdf')
+def view_all_qrs():
+    largest = qr.get_largest_code()
+
+    first = request.args.get('first')
+    try:
+        first = min(max(int(first),1), largest - 1)
+    except:
+        first = 1
+    last  = request.args.get('last')
+    try:
+        last = max(min(int(last), largest), 1)
+    except:
+        last = largest 
+    app.logger.info('Making PDF of {}-{} when the largest QR Codes is {}'.format(first, last, largest))
+    infos = qr.get_all_sorted(first, last)
+
+    CARDS_PER_PAGE = 4
+    pages = split_list(list([info.code for info in infos]), CARDS_PER_PAGE)
+    static_file = 'QRCards{}-{}.pdf'.format(first, last)
+    file = '/home/pi/server/ghost_jukebox/static/{}'.format(static_file)
+    for i, page in enumerate(pages):
+        make_pdf_page(file, page, i == 0)
+
+    return redirect(url_for('static', filename=static_file))
+
+
+def make_pdf_page(file, page, first):
+    image_paths = ['{}/final.jpg'.format(qr_dir(code_str)) for code_str in page]
+    images = [Image.open(path) for path in image_paths]
+
+    pdf_page = Image.new("RGB", (PAPER_HEIGHT, PAPER_WIDTH), (255,255,255))
+    for i in range(len(images)):
+        pdf_page.paste(images[i], CARD_LOCATIONS[i])
+
+    pdf_page = pdf_page.transpose(Image.ROTATE_90)
+
+    pdf_page.save(
+        file,
+        resolution=300,
+        title='QR Cards',
+        author='The Ghost',
+        append=not first
+    )
+
+def qr_dir(code_str=None, code=None):
+    if code:
+        code_str = '{0:04d}'.format(code)
     return "/home/pi/server/ghost_jukebox/static/qr_codes/qr{}".format(code_str)
 """
 So: it turns out that the Raspberry Pi is pretty bad at the qr code generation
@@ -182,6 +251,10 @@ def create_card_pattern(qr_code_img, cover_img, code_str, text):
     card.paste(qr_code_img, (PATTERN_WIDTH, qr_code_top))
     carddraw = ImageDraw.Draw(card)
 
+    carddraw.rectangle((0,0,PATTERN_WIDTH - 1, PATTERN_HEIGHT - 1), outline=(127,127,127))
+    carddraw.rectangle((PATTERN_WIDTH,0,PATTERN_WIDTH*2 - 1, PATTERN_HEIGHT - 1), outline=(127,127,127))
+
+
     # Draw the text "QR####" on top of the qr code
     text_box(
         'QR{}'.format(code_str), 
@@ -199,7 +272,7 @@ def create_card_pattern(qr_code_img, cover_img, code_str, text):
         ImageFont.truetype(FONT_PATH, size=32, encoding="unic"),
         (PATTERN_WIDTH + 60, qr_code_bottom, PATTERN_WIDTH - 120, 20),
         horizontal_allignment = ALLIGNMENT_CENTER,
-        vertical_allignment = ALLIGNMENT_BOTTOM,
+        vertical_allignment = ALLIGNMENT_TOP,
         fill=(0,0,0)
     )
     card.save(qr_dir(code_str) + "/final.jpg")
