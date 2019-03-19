@@ -38,5 +38,3 @@ def get_all_sorted(first = 0, last = 10000):
     ''', [first, last])
     qrinfos = [QRInfo(row[0], row[1], row[2], row[3]) for row in rows]
     return qrinfos
-
-

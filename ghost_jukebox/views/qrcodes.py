@@ -329,3 +329,4 @@ def text_box(text, image_draw, font, box, horizontal_allignment = ALLIGNMENT_LEF
 
 
 
+

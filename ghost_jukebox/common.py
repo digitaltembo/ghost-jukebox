@@ -17,7 +17,7 @@ def download_image(image_url, path, filename = None):
     response = requests.get(image_url, allow_redirects=True)
     if not filename:
         filename = get_filename_from_cd(response.headers.get('content-disposition'))
-        filename = filename if filename else url.split('/')[-1]
+        filename = filename if filename else image_url.split('/')[-1]
     destination_path = os.path.join(path, filename)
     with open(destination_path, 'wb') as file:
         file.write(response.content)
