@@ -11,6 +11,7 @@ def get_image(image_set):
     return ''
 
 @app.route('/s//info/artist/<artist_id>')
+@auth.login_required
 def artist_info(artist_id):
     artist = spotify.artist(artist_id)
     if not artist:
@@ -30,6 +31,7 @@ def artist_info(artist_id):
     
 
 @app.route('/s//info/album/<album_id>')
+@auth.login_required
 def album_info(album_id):
     album = spotify.album(album_id)
     if not album:
@@ -42,6 +44,7 @@ def album_info(album_id):
     )
 
 @app.route('/s//info/track/<track_id>')
+@auth.login_required
 def track_info(track_id):
     track = spotify.track(track_id)
     if not track:
@@ -53,6 +56,7 @@ def track_info(track_id):
     )
 
 @app.route('/s//info/playlist/<playlist_id>')
+@auth.login_required
 def playlist_info(playlist_id):
     playlist = spotify.playlist(playlist_id)
     if not playlist:
@@ -65,6 +69,7 @@ def playlist_info(playlist_id):
     )
 
 @app.route('/s//info/user/<user_id>')
+@auth.login_required
 def user_info(user_id):
     user = spotify.user(user_id)
     if not user:
@@ -77,6 +82,7 @@ def user_info(user_id):
     )
 
 @app.route('/s//search/<search_phrase>')
+@auth.login_required
 def search(search_phrase):
     if (search_phrase.strip()) == 0:
         return render_template('search.html', phrase = "", results = None)

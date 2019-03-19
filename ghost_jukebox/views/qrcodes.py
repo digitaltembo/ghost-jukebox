@@ -49,6 +49,7 @@ SPOTIFY_TYPES = [SPOTIFY_TRACK, SPOTIFY_ALBUM, SPOTIFY_ARTIST, SPOTIFY_PLAYLIST]
 FONT_PATH = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
 
 @app.route('/s//QR<code>')
+@auth.login_required
 def get_qr_info(code):
     qrinfo = qr.get_qr_info(code)
     if not qrinfo:
@@ -75,20 +76,24 @@ def get_qr_info(code):
         )
 
 @app.route('/s//play/QR<code>')
+@auth.login_required
 def play_qr(code):
     return 'HAH!'
 
 @app.route('/s//radio/QR<code>')
+@auth.login_required
 def generate_radio(code):
     return 'HAH'
 
 @app.route('/s//QR/form-create')
+@auth.login_required
 def create_qr(errors=[]):
     return render_template(
         'qr_create.html'
     )
 
 @app.route('/s//QR/create', methods=['GET'])
+@auth.login_required
 def make_qr():
     app.logger.info('Making the QR')
     qrtype = request.args.get('qr_type')
@@ -114,6 +119,7 @@ def make_qr():
     return redirect(url_for('view_qr', code_str=code_str))
 
 @app.route('/s//QR<code_str>/view')
+@auth.login_required
 def view_qr(code_str):
     return render_template(
         'qr_view.html',
@@ -128,6 +134,7 @@ def split_list(liszt, max_size):
     ]
 
 @app.route('/s//QRCards.pdf')
+@auth.login_required
 def view_all_qrs():
     largest = qr.get_largest_code()
 
