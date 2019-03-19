@@ -272,7 +272,7 @@ def create_card_pattern(qr_code_img, cover_img, code_str, text):
         text, 
         carddraw, 
         font(FONT_PATH, 32),
-        (60, cover_img_bottom, PATTERN_WIDTH - 120, 20),
+        (60, cover_img_bottom + 30, PATTERN_WIDTH - 120, 20),
         horizontal_allignment = ALLIGNMENT_CENTER,
         vertical_allignment = ALLIGNMENT_TOP,
         fill=(0,0,0)
