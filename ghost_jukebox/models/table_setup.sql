@@ -1,14 +1,14 @@
 
 -- table to store key/value pairs
 CREATE TABLE info(
-    key TEXT,
+    key   TEXT,
     value TEXT
 );
 
--- table to store QR code info
-CREATE TABLE qr_codes(
-    code TEXT,
-    type INT,
-    uri TEXT,
-    title TEXT
+-- table to store Card info
+CREATE TABLE cards(
+    code      TEXT,
+    card_type INT,
+    item_id   TEXT,
+    title     TEXT
 );

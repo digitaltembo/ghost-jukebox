@@ -4,7 +4,7 @@
     <img src="{{  image_url }}"/>
     <h1>{{ playlist.name }}</h1>
     <h3>Created By {{ playlist.owner.link() }}</h3>
-    <span class="controlbar">{{ playlist.qr_link() }}</span>
+    <span class="controlbar">{{ playlist.qr_card_link() }}</span>
     <ol>
     {% for track in playlist.tracks %}
         <li>{{ track.link() }} {{ track.preview_element() }}</li>

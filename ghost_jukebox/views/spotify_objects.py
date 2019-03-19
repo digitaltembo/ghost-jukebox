@@ -1,6 +1,6 @@
 import requests
 from ghost_jukebox import app
-from ghost_jukebox.views import qrcodes
+from ghost_jukebox.views import cards
 from flask import url_for, Markup, escape
 
 class Artist:
@@ -27,16 +27,16 @@ class Artist:
         return Markup("<a href='{}' class='artist-link'>{}</a>".format(self.url(), escape(self.name)))
     def spotify_link_elem(self):
         return Markup("<a href='{}'><i class='fas fa-external-link-alt'></i></a>".format(self.spotify_link))
-    def qr_url(self):
+    def qr_card_url(self):
         return url_for(
-            'make_qr', 
-            qr_type = qrcodes.SPOTIFY_ARTIST, 
-            qr_id = self.id, 
-            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            'save_card', 
+            card_type = cards.SPOTIFY_ARTIST, 
+            item_id = self.id, 
+            image_url = self.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (Artist)'.format(self.name)
         )
-    def qr_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+    def qr_card_link(self):
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def artist_from_json(info):
     try:
@@ -85,16 +85,16 @@ class Album:
         return Markup("<a href='{}' class='album-link'>{}</a>".format(self.url(), escape(self.name)))
     def artist_links(self):
         return [artist.link() for artist in self.artists]
-    def qr_url(self):
+    def qr_card_url(self):
         return url_for(
-            'make_qr', 
-            qr_type = qrcodes.SPOTIFY_ALBUM, 
-            qr_id = self.id, 
-            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            'save_card', 
+            card_type = cards.SPOTIFY_ALBUM, 
+            item_id = self.id, 
+            image_url = self.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (from {})'.format(self.name, ', '.join([a.name for a in self.artists]))
         )
-    def qr_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+    def qr_card_link(self):
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def album_from_json(info):
     try:
@@ -152,16 +152,16 @@ class Track:
                 </span>""".format(self.id, self.preview_url, self.id))
         else:
             return "" 
-    def qr_url(self):
+    def qr_card_url(self):
         return url_for(
-            'make_qr', 
-            qr_type = qrcodes.SPOTIFY_TRACK, 
-            qr_id = self.id, 
-            image_url = self.album.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            'save_card', 
+            card_type = cards.SPOTIFY_TRACK, 
+            item_id = self.id, 
+            image_url = self.album.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (from {})'.format(self.name, ', '.join([a.name for a in self.artists]))
         )
-    def qr_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+    def qr_card_link(self):
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def track_from_json(info):
     try:
@@ -204,16 +204,16 @@ class Playlist:
         return url_for('playlist_info', playlist_id = self.id)
     def link(self):
         return Markup("<a href='{}' class='playlist-link'>{}</a>".format(self.url(), escape(self.name)))
-    def qr_url(self):
+    def qr_card_url(self):
         return url_for(
-            'make_qr', 
-            qr_type = qrcodes.SPOTIFY_PLAYLIST, 
-            qr_id = self.id, 
-            image_url = self.image_set.get_by_size(target_width = qrcodes.PATTERN_WIDTH).url,
+            'save_card', 
+            card_type = cards.SPOTIFY_PLAYLIST, 
+            item_id = self.id, 
+            image_url = self.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (created by {})'.format(self.name, self.owner.name)
         )
-    def qr_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_url()))
+    def qr_card_link(self):
+        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def playlist_from_json(info):
     try:

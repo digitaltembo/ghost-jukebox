@@ -4,7 +4,7 @@
     <h1>{{ track.name }}</h1>
     <h3>By {{ track.artist_links() | join(', ') }}</h3>
 
-    <span class="controlbar">{{ track.qr_link() }}</span>
+    <span class="controlbar">{{ track.qr_card_link() }}</span>
     {% if track.album %}
         <h3>Off of {{  track.album.link() }}</h3>
     {% endif %}

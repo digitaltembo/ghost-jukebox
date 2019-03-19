@@ -10,7 +10,7 @@
                 <h1>{{ album.name }}</h1>
                 <h3>By {{ album.artist_links() | join(', ') }}</h3>
 
-                <span class="controlbar">{{ album.qr_link() }}</span>
+                <span class="controlbar">{{ album.qr_card_link() }}</span>
                 <ol>
                 {% for track in album.tracks %}
                     <li>{{ track.link() }} {{ track.preview_element() }}</li>

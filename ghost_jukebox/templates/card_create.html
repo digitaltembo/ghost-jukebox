@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <h1>{% if editing %}Edit{% else %}Create{% endif %} QR Card</h1>
+    {% if editing %}
+        <img src="{{ card_img }}"></img>
+    {% endif %}
+    <form action="{{ url_for('save_card') }}">
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Type of Card</legend>
+                <div class="col-sm-10">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="card_type" value="0" id="card_type_0" {% if card_type == 0 %} checked {% endif %}>
+                        <label class="form-check-label" for="card_type_0">
+                            Spotify Track
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="card_type" value="1" id="card_type_1" {% if card_type == 1 %} checked {% endif %}>
+                        <label class="form-check-label" for="card_type_1">
+                            Spotify Album
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="card_type" value="2" id="card_type_2" {% if card_type == 2 %} checked {% endif %}>
+                        <label class="form-check-label" for="card_type_2">
+                            Spotify Artist
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="card_type" value="3" id="card_type_3" {% if card_type == 3 %} checked {% endif %}>
+                        <label class="form-check-label" for="card_type_3">
+                            Spotify Playlist
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="card_type" value="4" id="card_type_4" {% if card_type == 4 %} checked {% endif %}>
+                        <label class="form-check-label" for="card_type_4">
+                            Online Radio
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group row">
+            <label for="text" class="col-sm-2 col-form-label">Card Title/text</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="text" name="text" placeholder="Title" value="{{ text }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="item_id" class="col-sm-2 col-form-label">Item ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="item_id" name="item_id" placeholder="Item ID" value="{{ item_id }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="image_url" class="col-sm-2 col-form-label">Cover Image</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="image_url" name="image_url"placeholder="Image URL" >
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+        {% if editing %}
+            <input type="hidden" name="code" value="{{ code }}"/>
+        {% endif %}
+    </form>
+
+
+{% endblock %}
