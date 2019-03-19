@@ -243,6 +243,8 @@ def create_card_pattern(qr_code_img, cover_img, code_str, text):
     cover_width, cover_height = cover_img.size
     card.paste(cover_img, (0, int((PATTERN_HEIGHT - cover_height) / 2)))
 
+    cover_img_bottom = int((PATTERN_HEIGHT + cover_height) / 2)
+
     qr_code_width, qr_code_height = qr_code_img.size 
     qr_code_img = qr_code_img.resize((PATTERN_WIDTH, int(qr_code_height * PATTERN_WIDTH / qr_code_width)), Image.LANCZOS)
     qr_code_width, qr_code_height = qr_code_img.size 
@@ -259,22 +261,33 @@ def create_card_pattern(qr_code_img, cover_img, code_str, text):
     text_box(
         'QR{}'.format(code_str), 
         carddraw, 
-        ImageFont.truetype(FONT_PATH, size=16, encoding="unic"),
+        font(FONT_PATH, 16),
         (PATTERN_WIDTH + 60, qr_code_top, PATTERN_WIDTH - 120, 20),
         horizontal_allignment = ALLIGNMENT_CENTER,
         vertical_allignment = ALLIGNMENT_BOTTOM,
+        fill=(0,0,0)
+    )
+    # Draw the text for the given card under the Cover Image
+    text_box(
+        text, 
+        carddraw, 
+        font(FONT_PATH, 32),
+        (60, cover_img_bottom, PATTERN_WIDTH - 120, 20),
+        horizontal_allignment = ALLIGNMENT_CENTER,
+        vertical_allignment = ALLIGNMENT_TOP,
         fill=(0,0,0)
     )
     # Draw the text for the given card under the qr code
     text_box(
         text, 
         carddraw, 
-        ImageFont.truetype(FONT_PATH, size=32, encoding="unic"),
+        font(FONT_PATH, 32),
         (PATTERN_WIDTH + 60, qr_code_bottom, PATTERN_WIDTH - 120, 20),
         horizontal_allignment = ALLIGNMENT_CENTER,
         vertical_allignment = ALLIGNMENT_TOP,
         fill=(0,0,0)
     )
+
     card.save(qr_dir(code_str) + "/final.jpg")
 
 
