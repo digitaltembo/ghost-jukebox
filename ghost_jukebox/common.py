@@ -1,7 +1,10 @@
 from ghost_jukebox import app
+
+import os
+import random
 import re
 import requests
-import os
+import string
 
 # get filename from content-disposition header
 def get_filename_from_cd(cd):
@@ -33,4 +36,5 @@ def save_file(request, name, path):
     file.save(os.path.join(app.instance_path, 'static', path, filename))
     return filename
 
-PURPLE_RGBs = (96,0,152)
+def random_string(length=10):
+    return ''.join(random.choice(string.ascii_uppercase) for _ in range(length))

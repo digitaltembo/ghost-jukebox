@@ -99,11 +99,15 @@ def generate_radio(code):
 
 @app.route('/s//card/edit')
 @auth.login_required
-def edit_card(errors=[]):
-    code      = request.args.get('code')
-    card_type = request.args.get('card_type')
-    item_id   = request.args.get('item_id')
-    text      = request.args.get('text')
+def edit_card_view():
+    return edit_card(
+        code      = request.args.get('code'),
+        card_type = request.args.get('card_type'),
+        item_id   = request.args.get('item_id'),
+        text      = request.args.get('text')
+    )
+
+def edit_card(errors=[], code=None, card_type=None, item_id=None, text=None):
     if any([code, card_type, item_id, text]) and all([code, card_type, item_id, text]):
         return render_template(
             'card_edit.html',
@@ -113,7 +117,8 @@ def edit_card(errors=[]):
             card_type = card_type,
             item_id   = item_id,
             text      = text,
-            card_img  = "{}/final.jpg".format(static_dir(code))
+            card_img  = url_for('static', filename="{}/final.jpg".format(static_dir(code))),
+            cache_breaker = common.random_string(5)
         )
     return render_template(
         'card_edit.html',
@@ -122,7 +127,8 @@ def edit_card(errors=[]):
         code      = '',
         card_type = 0,
         item_id   = '',
-        text      = ''
+        text      = '',
+        cache_breaker = common.random_string(5)
     )
 
 @app.route('/s//QR<code>/view')
@@ -130,9 +136,14 @@ def edit_card(errors=[]):
 def view_card(code):
     info = card.get_card_info(code)
     if info:
-        return redirect(url_for('edit_card', code=code, card_type=info.card_type, item_id=info.item_id, text=info.text))
+        return edit_card(
+            code=code, 
+            card_type=info.card_type, 
+            item_id=info.item_id, 
+            text=info.title
+        )
     else:
-        return redirect(url_for('edit_card'))
+        return edit_card()
 
 
 # This does the heavy lifting of actually saving a given card
@@ -168,7 +179,7 @@ def save_card():
     else:
         card.insert(card.CardInfo(code, card_type, item_id, text))
 
-    return redirect(url_for('view_qr', code=code_str))
+    return redirect(url_for('view_qr', code=code))
 
 
 """
