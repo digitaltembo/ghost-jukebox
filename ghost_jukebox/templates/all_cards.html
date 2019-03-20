@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}All Cards{% endblock %}
 {% block content %}
+<a href="{{ url_for('make_and_view_pdf') }}" title="View the PDF">View the PDF</a>
 {% for card in cards %}
     <a href="{{ card.view_link() }}">
         <img src="{{ card.image_src() }}" />

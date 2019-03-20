@@ -308,6 +308,8 @@ def create_card_pattern(qr_code_img, cover_img, code, text):
 @app.route('/s//QRCards')
 @auth.login_required
 def all_cards():
+    card_infos = card.get_all_sorted()
+
     return render_template(
         'all_cards.html',
         cards=card_infos
