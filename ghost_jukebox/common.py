@@ -6,6 +6,9 @@ import re
 import requests
 import string
 
+from werkzeug.utils import secure_filename
+
+
 # get filename from content-disposition header
 def get_filename_from_cd(cd):
     if not cd:
@@ -27,13 +30,17 @@ def download_image(image_url, path, filename = None):
     return filename
 
 def save_file(request, name, path):
+    app.logger.info('Checking the request for the file: {}'.format(request.files))
+    app.logger.info(str(request))
     if name not in request.files:
+        app.logger.info('Name not in file :(')
         return False
     file = request.files[name]
     if not file or file.filename == '':
+        app.logger.info('{} and {}'.format(file, file.filename))
         return False
     filename = secure_filename(file.filename)
-    file.save(os.path.join(app.instance_path, 'static', path, filename))
+    file.save(os.path.join(path, filename))
     return filename
 
 def random_string(length=10):

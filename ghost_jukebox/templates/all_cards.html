@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}All Cards{% endblock %}
+{% block content %}
+{% for card in cards %}
+    <a href="{{ card.view_link() }}">
+        <img src="{{ card.image_src() }}" />
+    </a>
+{% endfor %}
+{% endblock %}

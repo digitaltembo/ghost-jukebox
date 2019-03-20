@@ -16,4 +16,4 @@ host = get('GHOST_HOST', '0.0.0.0')
 
 db_path = get('GHOST_DB_PATH', 'model.db')
 
-rapid_api_key = get('GHOST_RAPID_KEY', 'secret secret')
+upload_folder = get('GHOST_UPLOAD_DIR', '~/')

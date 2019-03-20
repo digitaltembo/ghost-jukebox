@@ -147,13 +147,21 @@ def view_card(code):
 
 
 # This does the heavy lifting of actually saving a given card
-@app.route('/s//card/save', methods=['GET'])
+@app.route('/s//card/save', methods=['GET', 'POST'])
 @auth.login_required
 def save_card():
-    card_type = request.args.get('card_type')
-    item_id   = request.args.get('item_id')
-    text      = request.args.get('text')
-    specific_code = request.args.get('code')
+    if request.method == 'GET':
+        card_type =     request.args.get('card_type')
+        item_id   =     request.args.get('item_id')
+        text      =     request.args.get('text')
+        specific_code = request.args.get('code')
+        image_url =     request.args.get('image_url')
+    elif request.method == 'POST':
+        card_type =     request.form.get('card_type')
+        item_id   =     request.form.get('item_id')
+        text      =     request.form.get('text')
+        specific_code = request.form.get('code')
+        image_url =     request.form.get('image_url')
 
     if not card_type or not item_id or not text:
         return edit_card(errors='Fully specify the form!')
@@ -161,14 +169,17 @@ def save_card():
     code    = specific_code if specific_code else card.get_next_code()
     carddir = full_dir(code)
 
-    image_url = request.args.get('image_url')
+    # try first to get an image upload
+    app.logger.info(request.files)
+    uploaded_file = common.save_file(request, 'image_upload', carddir)
+    if not uploaded_file:
+        # otherwise, see if the image url is specified
+        if image_url:
+            uploaded_file = common.download_image(image_url, carddir)
+        if not uploaded_file:
+            return edit_card(errors='Failed to download image. Is that the correct file?')
 
-    app.logger.info("Making QR code from {}, {}, {}".format(card_type, item_id, image_url))
-
-    saved_img_name = common.download_image(image_url, carddir)
-    if not saved_img_name:
-        return create_qr(errors='Failed to download image. Is that the correct file?')
-    cover_img = Image.open(os.path.join(carddir, saved_img_name))
+    cover_img = Image.open(os.path.join(carddir, uploaded_file))
 
     qr_image = get_qr_image(code)
 
@@ -179,7 +190,7 @@ def save_card():
     else:
         card.insert(card.CardInfo(code, card_type, item_id, text))
 
-    return redirect(url_for('view_qr', code=code))
+    return redirect(url_for('view_card', code=code))
 
 
 """
@@ -294,6 +305,14 @@ def create_card_pattern(qr_code_img, cover_img, code, text):
 
 
 
+@app.route('/s//QRCards')
+@auth.login_required
+def all_cards():
+    return render_template(
+        'all_cards.html',
+        cards=card_infos
+    )
+
 # This method generates a PDF for printing out multiple cards at a time
 # it takes in an optional first and last GET parameter, with which to limit the cards displayed,
 # and puts the cards 4-to-a-page into a PDF. The call to card.get_all_sorted ensures that
@@ -302,7 +321,7 @@ def create_card_pattern(qr_code_img, cover_img, code, text):
 
 @app.route('/s//QRCards.pdf')
 @auth.login_required
-def view_all_cards():
+def make_and_view_pdf():
     largest = card.get_largest_code()
 
     first = request.args.get('first')

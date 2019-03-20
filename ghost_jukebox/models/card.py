@@ -11,7 +11,12 @@ class CardInfo:
         self.card_type = card_type
         self.item_id = item_id
         self.title = title
-
+    def static_dir(self):
+        return "cards/qr{}".format(self.code)
+    def image_src(self):
+        return url_for("static", filename="{}/final.jpg".format(self.static_dir()))
+    def view_link(self):
+        return url_for('view_card', code=self.code)
 
 def get_card_info(code):
     row = query_one('SELECT code, card_type, item_id, title FROM cards WHERE code = ?', [code])
