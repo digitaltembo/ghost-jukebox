@@ -1,12 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Track: {{ track.name }}{% endblock %}
 {% block content %}
-    <h1>{{ track.name }}</h1>
-    <h3>By {{ track.artist_links() | join(', ') }}</h3>
+    <div class="container">
+        <div class="row vertical-center">
+            <div class="col">
+                <img src="{{  image_url }}"/>
+            </div>
+            <div class="col">
+                <h1>{{ track.name }}</h1>
+                <h3>By {{ track.artist_links() | join(', ') }}</h3>
 
-    <span class="controlbar">{{ track.qr_card_link() }}</span>
-    {% if track.album %}
-        <h3>Off of {{  track.album.link() }}</h3>
-    {% endif %}
+                <span class="controlbar">{{ track.qr_card_link() }}</span>
+                {% if track.album %}
+                    <h3>Off of {{  track.album.link() }}</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+
 {% endblock %}
-

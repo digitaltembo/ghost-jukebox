@@ -50,8 +50,10 @@ def track_info(track_id):
     if not track:
         return 'dang'
 
+    image_url = get_image(track_id.album.image_set) if track_id.album else url_of('static',filename='noalbum.png')
     return render_template(
         'track_info.html',
+        image_url = image_url,
         track = track
     )
 
