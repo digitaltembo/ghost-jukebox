@@ -12,3 +12,8 @@ CREATE TABLE cards(
     item_id   TEXT,
     title     TEXT
 );
+
+-- table used to store the music queue, pretty straightforward
+CREATE TABLE queue(
+    thing TEXT
+);

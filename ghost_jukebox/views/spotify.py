@@ -21,6 +21,11 @@ SCOPES = [
     'user-read-currently-playing'
 ] 
 
+SPOTIFY_ACCESS_TOKEN = 'SPOTIFY_ACCESS_TOKEN'
+SPOTIFY_REFRESH_TOKEN = 'SPOTIFY_REFRESH_TOKEN'
+SPOTIFY_TOKEN_EXPIRATION = 'SPOTIFY_TOKEN_EXPIRATION'
+
+
 
 def spotify_url(endpoint):
     return 'https://api.spotify.com/v1/{}'.format(endpoint)
@@ -95,13 +100,13 @@ def forward_spotify_call(method, endpoint):
     return (response.raw.read(), response.status_code, response.headers.items())
 
 def get_access_token():
-    access_token  = info.get_info(info.SPOTIFY_ACCESS_TOKEN)
+    access_token  = info.get_info(SPOTIFY_ACCESS_TOKEN)
     
     if not access_token:
         return False 
     else:
-        refresh_token = info.get_info(info.SPOTIFY_REFRESH_TOKEN)
-        expiration    = datetime.fromtimestamp(float(info.get_info(info.SPOTIFY_TOKEN_EXPIRATION)))
+        refresh_token = info.get_info(SPOTIFY_REFRESH_TOKEN)
+        expiration    = datetime.fromtimestamp(float(info.get_info(SPOTIFY_TOKEN_EXPIRATION)))
 
         if datetime.now() < expiration:
             return access_token
@@ -122,11 +127,11 @@ def get_access_token():
 
 def set_token_from_json(token_json):
     info_dict = {
-        info.SPOTIFY_ACCESS_TOKEN:     token_json['access_token'],
-        info.SPOTIFY_TOKEN_EXPIRATION: get_expiration_time(token_json['expires_in'])
+        SPOTIFY_ACCESS_TOKEN:     token_json['access_token'],
+        SPOTIFY_TOKEN_EXPIRATION: get_expiration_time(token_json['expires_in'])
     }
     if 'refresh_token' in token_json:
-        info_dict[info.SPOTIFY_REFRESH_TOKEN] = token_json['refresh_token']
+        info_dict[SPOTIFY_REFRESH_TOKEN] = token_json['refresh_token']
 
     info.set_info_dict(info_dict)
 
@@ -250,5 +255,28 @@ def search(search, search_types = ALL_SEARCHES):
         app.logger.error('Failed to search: {}'.format(search))
         return False
     return spotify_objects.search_results_from_json(info)
+
+def resume(device_id):
+    info, response_code = internal_spotify_call('PUT', 'me/player/play?device_id={}'.format(device_id))
+    return info, response_code
+
+def play(device_id, uri):
+    params = {
+        "context_uri" :  """{"context_uri": "{}"}""".format(uri)
+    }
+    info, response_code = internal_spotify_call('PUT', 'me/player/play?device_id={}'.format(device_id), params=params)
+    return info, response_code
+
+def play_tracks(device_id, track_ids):
+    params = {
+        "uris" :  '["{}"]'.format('","'.join(["spotify:track:{}".format(uri) for uri in uris]))
+    }
+    info, response_code = internal_spotify_call('PUT', 'me/player/play?device_id={}'.format(device_id), params=params)
+    return info, response_code
+
+def stop(device_id):
+    info, response_code = internal_spotify_call('PUT', 'me/player/pause?device_id={}'.format(device_id))
+    return info, response_code
+    
 
 

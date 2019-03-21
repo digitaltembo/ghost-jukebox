@@ -1,11 +1,5 @@
 from ghost_jukebox.models.db import query_one
 
-# these keys are used a bunch I guess 
-SPOTIFY_DEVICE_ID = 'SPOTIFY_DEVICE_ID'
-SPOTIFY_ACCESS_TOKEN = 'SPOTIFY_ACCESS_TOKEN'
-SPOTIFY_REFRESH_TOKEN = 'SPOTIFY_REFRESH_TOKEN'
-SPOTIFY_TOKEN_EXPIRATION = 'SPOTIFY_TOKEN_EXPIRATION'
-
 def get_info(key):
     row = query_one('SELECT value FROM info WHERE key = ?', [key])
     if row:
