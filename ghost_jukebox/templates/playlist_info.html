@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Playlist: {{ playlist.name }}{% endblock %}
 {% block content %}
-    <img src="{{  image_url }}"/>
-    <h1>{{ playlist.name }}</h1>
-    <h3>Created By {{ playlist.owner.link() }}</h3>
-    <span class="controlbar">{{ playlist.qr_card_link() }}</span>
-    <ol>
-    {% for track in playlist.tracks %}
-        <li>{{ track.link() }} {{ track.preview_element() }}</li>
-    {% endfor %}
-    </ol>
+    <div class="container">
+        <div class="row vertical-center">
+            <div class="col">
+                <img src="{{  image_url }}"/>
+            </div>
+            <div class="col">
+                <h1>{{ playlist.name }}</h1>
+                <h3>Created By {{ playlist.owner.link() }}</h3>
+                <span class="controlbar">{{ playlist.qr_card_link() }}</span>
+                <ol>
+                {% for track in playlist.tracks %}
+                    <li>{{ track.link() }} {{ track.preview_element() }}</li>
+                {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

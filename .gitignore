@@ -3,5 +3,7 @@ ghost_jukebox/imgs/*
 ghost_jukebox.egg-info/*
 venv/*
 ghost_jukebox/static/*
+!ghost_jukebox/static/favicon.ico
+!ghost_jukebox/static/styles.css
 log/*
 the.db

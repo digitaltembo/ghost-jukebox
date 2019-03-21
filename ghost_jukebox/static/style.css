@@ -17,3 +17,8 @@ h1,h2,h3 {
     background-color: #ab00ff;
     border-color: #ab00ff;
 }
+
+.vertical-center {
+    display: flex;
+    align-items: center;
+}
