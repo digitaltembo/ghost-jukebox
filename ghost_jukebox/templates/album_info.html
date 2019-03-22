@@ -10,7 +10,20 @@
                 <h1>{{ album.name }}</h1>
                 <h3>By {{ album.artist_links() | join(', ') }}</h3>
 
-                <span class="controlbar">{{ album.qr_card_link() }}</span>
+                <span class="controlbar">
+                    <a href="{{ url_for('play', music_type='album', item_id=album.id) }}" title="{{ 'Play ' + album.name }}">
+                        <i class="fas fa-play"></i>
+                    </a>
+                    <a href="{{ url_for('enqueue', music_type='album', item_id=album.id) }}" title="{{ 'Enqueue ' + album.name }}">
+                        <i class="fas fa-plus-square"></i>
+                    </a>
+                    <a href="{{ url_for('radio', music_type='album', item_id=album.id) }}" title="{{ 'Artist ' + album.name }}">
+                        <i class="fas fa-brain"></i>
+                    </a>
+                    <a href="{{ album.qr_card_url() }}" title="Make QR Card">
+                        <i title='Make QR Card' class='fas fa-qrcode'></i>
+                    </a>
+                </span>
                 <ol>
                 {% for track in album.tracks %}
                     <li>{{ track.link() }} {{ track.preview_element() }}</li>

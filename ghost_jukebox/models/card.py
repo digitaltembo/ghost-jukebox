@@ -66,3 +66,7 @@ def get_largest_code():
 
 def get_next_code():
     return strify(get_largest_code() + 1)
+
+def item_has_card(item_id):
+    return query_one('SELECT 1 FROM cards WHERE item_id = ?', [item_id]) is not None
+    

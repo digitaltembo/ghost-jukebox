@@ -35,8 +35,6 @@ class Artist:
             image_url = self.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (Artist)'.format(self.name)
         )
-    def qr_card_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def artist_from_json(info):
     try:
@@ -93,8 +91,6 @@ class Album:
             image_url = self.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (from {})'.format(self.name, ', '.join([a.name for a in self.artists]))
         )
-    def qr_card_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def album_from_json(info):
     try:
@@ -160,8 +156,6 @@ class Track:
             image_url = self.album.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (from {})'.format(self.name, ', '.join([a.name for a in self.artists]))
         )
-    def qr_card_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def track_from_json(info):
     try:
@@ -212,8 +206,6 @@ class Playlist:
             image_url = self.image_set.get_by_size(target_width = cards.PATTERN_WIDTH).url,
             text = '{} (created by {})'.format(self.name, self.owner.name)
         )
-    def qr_card_link(self):
-        return Markup("<a href='{}'><i title='Make QR Card' class='fas fa-qrcode'></i></a>".format(self.qr_card_url()))
 
 def playlist_from_json(info):
     try:

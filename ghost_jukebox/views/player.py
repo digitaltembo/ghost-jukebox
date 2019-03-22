@@ -32,7 +32,7 @@ def enqueue(music_type, item_id):
 
 @app.route('/s//shuffle/<music_type>/<item_id>')
 @auth.login_required
-def play(music_type, item_id):
+def shuffle(music_type, item_id):
     if music_type == 'track':
         play_track(item_id)
     elif music_type == 'album':
@@ -48,7 +48,7 @@ def play(music_type, item_id):
 
 @app.route('/s//radio/<music_type>/<item_id>')
 @auth.login_required
-def play(music_type, item_id):
+def radio(music_type, item_id):
     if music_type == 'track':
         track_radio(item_id)
     elif music_type == 'album':
@@ -76,7 +76,7 @@ def stop_qr(item_id):
 
 @app.route('/s//play/')
 @auth.login_required
-def play():
+def resume():
     # figure out whats playing?
     return 'hmm'
 
@@ -119,7 +119,12 @@ def play_playlist(playlist_id):
         return 'blah :(' #redirect(url_for('setup')) ? 
 
 def play_radio(radio_id):
-    result, response_code = 
+    device_id = info.get_info(DEVICE_ID)
+    if device_id:
+        result, response_code = spotify.play(device_id, "spotify:playlist:{}".format(playlist_id))
+        return 'hmmm'
+    else:
+        return 'blah :(' #redirect(url_for('setup')) ? 
 
 
 

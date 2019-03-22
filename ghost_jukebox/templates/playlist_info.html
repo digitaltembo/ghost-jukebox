@@ -9,7 +9,20 @@
             <div class="col">
                 <h1>{{ playlist.name }}</h1>
                 <h3>Created By {{ playlist.owner.link() }}</h3>
-                <span class="controlbar">{{ playlist.qr_card_link() }}</span>
+                <span class="controlbar">
+                    <a href="{{ url_for('play', music_type='playlist', item_id=playlist.id) }}" title="{{ 'Play ' + playlist.name }}">
+                        <i class="fas fa-play"></i>
+                    </a>
+                    <a href="{{ url_for('enqueue', music_type='playlist', item_id=playlist.id) }}" title="{{ 'Enqueue ' + playlist.name }}">
+                        <i class="fas fa-plus-square"></i>
+                    </a>
+                    <a href="{{ url_for('radio', music_type='playlist', item_id=playlist.id) }}" title="{{ 'Artist ' + playlist.name }}">
+                        <i class="fas fa-brain"></i>
+                    </a>
+                    <a href="{{ playlist.qr_card_url() }}" title="Make QR Card">
+                        <i title='Make QR Card' class='fas fa-qrcode'></i>
+                    </a>
+                </span>
                 <ol>
                 {% for track in playlist.tracks %}
                     <li>{{ track.link() }} {{ track.preview_element() }}</li>
