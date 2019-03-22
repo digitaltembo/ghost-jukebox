@@ -22,3 +22,11 @@ h1,h2,h3 {
     display: flex;
     align-items: center;
 }
+
+.controlbar {
+    font-size:2em;
+}
+
+.controlbar a {
+    text-decoration: none;
+}

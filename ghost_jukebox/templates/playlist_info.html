@@ -16,8 +16,8 @@
                     <a href="{{ url_for('enqueue', music_type='playlist', item_id=playlist.id) }}" title="{{ 'Enqueue ' + playlist.name }}">
                         <i class="fas fa-plus-square"></i>
                     </a>
-                    <a href="{{ url_for('radio', music_type='playlist', item_id=playlist.id) }}" title="{{ 'Artist ' + playlist.name }}">
-                        <i class="fas fa-brain"></i>
+                    <a href="{{ url_for('radio', music_type='playlist', item_id=playlist.id) }}" title="{{ 'Create a SmartRadio from ' + playlist.name }}">
+                        <i class="fas fa-robot"></i>
                     </a>
                     <a href="{{ playlist.qr_card_url() }}" title="Make QR Card">
                         <i title='Make QR Card' class='fas fa-qrcode'></i>

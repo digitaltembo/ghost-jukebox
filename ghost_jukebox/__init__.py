@@ -22,7 +22,8 @@ def get_pw(username):
 app.config['UPLOAD_FOLDER'] = conf.upload_folder
 
 import ghost_jukebox.views.home
-import ghost_jukebox.views.spotify
-import ghost_jukebox.views.frontend
 import ghost_jukebox.views.cards
+import ghost_jukebox.views.frontend
 import ghost_jukebox.views.music_info
+import ghost_jukebox.views.player
+import ghost_jukebox.views.spotify
