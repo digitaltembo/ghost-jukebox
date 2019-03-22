@@ -17,7 +17,7 @@
                     <a href="{{ url_for('enqueue', music_type='track', item_id=track.id) }}" title="{{ 'Enqueue ' + track.name }}">
                         <i class="fas fa-plus-square"></i>
                     </a>
-                    <a href="{{ url_for('radio', music_type='track', item_id=track.id) }}" title="{{ 'Create a SmartRadio from ' + title }}">
+                    <a href="{{ url_for('radio', music_type='track', item_id=track.id) }}" title="{{ 'Create a SmartRadio from ' + track.name }}">
                         <i class="fas fa-robot"></i>
                     </a>
                     <a href="{{ track.qr_card_url() }}" title="Make QR Card">
