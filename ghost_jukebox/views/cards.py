@@ -33,6 +33,14 @@ ONLINE_RADIO     = 4
 
 SPOTIFY_TYPES = [SPOTIFY_TRACK, SPOTIFY_ALBUM, SPOTIFY_ARTIST, SPOTIFY_PLAYLIST]
 
+TYPE_NAMES = {
+    SPOTIFY_TRACK: 'track',
+    SPOTIFY_ALBUM: 'album',
+    SPOTIFY_ARTIST: 'artist',
+    SPOTIFY_PLAYLIST: 'playlist',
+    ONLINE_RADIO:'radio'
+}
+
 FONT_PATH = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
 
 

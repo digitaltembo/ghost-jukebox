@@ -1,10 +1,61 @@
 {% extends "base.html" %}
 {% block title %}All Cards{% endblock %}
+{% block head %}
+    {{ super() }}
+    <!-- Include jquery -->
+    <script
+        src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+    <!-- Include datatables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+
+{% endblock head %}
 {% block content %}
-<a href="{{ url_for('make_and_view_pdf') }}" title="View the PDF">View the PDF</a>
-{% for card in cards %}
-    <a href="{{ card.view_link() }}">
-        <img src="{{ card.image_src() }}" />
-    </a>
-{% endfor %}
+<div class="container">
+    <h1>List of Cards</h1>
+    <p> 
+        These are the cards that have been configured for your ghost jukebox. Add more! More music is good.
+        Simply search for artists, albums, tracks or playlists in the searchbar, or go directly to 
+        <a href="{{ url_for('edit_card_view') }}">Create a Card</a>. Click on any of the codes below to edit it.
+        To download the entire pdf, see the link at the very bottom.
+    </p>
+
+    <table class="table table-hover">
+
+        <caption>List of Cards</caption>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th>
+                <th scope="col">Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for card in cards %}
+            <tr>
+                <td scope="row"><a href="{{ card.view_link() }}">{{ card.code }}</a></td>
+                <td>{{ type_names[card.card_type] }}</td>
+                <td>{{ card.title }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>PDFs</h2>
+    <a href="{{ url_for('make_and_view_pdf') }}" title="View the PDF">Download PDF</a> <br/>
+
+    <form action="{{ url_for('make_and_view_pdf') }}" method="get" class="form-inline">
+        <span>Download PDF for specific card range</span>
+        <label class="sr-only" for="first">Lowest Card to Download</label>
+        <input type="number" class="form-control mb-2 mr-sm-2" id="first" name="first" placeholder="Lowest Card to Download">
+        -
+        <label class="sr-only" for="last">Highest Card to Download</label>
+        <input type="number" class="form-control mb-2 mr-sm-2" id="last" name="last" placeholder="Highest Card to Download">
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form> 
+</div>
+
 {% endblock %}
