@@ -15,7 +15,8 @@ def root():
 @app.route('/s')
 @basic_auth.login_required
 def home():
-    return render_template('index.html', name=auth.username())
+    return render_template('index.html', name=basic_auth.username())
+
 
 
 

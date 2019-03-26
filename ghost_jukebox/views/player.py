@@ -4,7 +4,7 @@ from time import sleep
 from PIL import Image
 import time
 
-from ghost_jukebox import app, basic_auth
+from ghost_jukebox import app, home_auth
 
 DEVICE_ID = 'DEVICE_ID'
 
@@ -125,6 +125,7 @@ def play_radio(radio_id):
         return 'hmmm'
     else:
         return 'blah :(' #redirect(url_for('setup')) ? 
+
 
 
 
