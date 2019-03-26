@@ -4,7 +4,7 @@
     {{ super() }}
     <!-- Include jquery -->
     <script
-        src="http://code.jquery.com/jquery-3.3.1.min.js"
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 
@@ -23,9 +23,7 @@
         To download the entire pdf, see the link at the very bottom.
     </p>
 
-    <table class="table table-hover">
-
-        <caption>List of Cards</caption>
+    <table class="table table-hover" id="cards">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -48,7 +46,7 @@
     <a href="{{ url_for('make_and_view_pdf') }}" title="View the PDF">Download PDF</a> <br/>
 
     <form action="{{ url_for('make_and_view_pdf') }}" method="get" class="form-inline">
-        <span>Download PDF for specific card range</span>
+        <span>Download PDF for specific card range: </span>
         <label class="sr-only" for="first">Lowest Card to Download</label>
         <input type="number" class="form-control mb-2 mr-sm-2" id="first" name="first" placeholder="Lowest Card to Download">
         -
@@ -57,5 +55,10 @@
         <button type="submit" class="btn btn-primary mb-2">Submit</button>
     </form> 
 </div>
+<script>
+    $(document).ready(function() {
+        $('#cards').DataTable();
+    } );
+</script>
 
 {% endblock %}

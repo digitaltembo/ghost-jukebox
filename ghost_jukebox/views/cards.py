@@ -320,7 +320,8 @@ def all_cards():
 
     return render_template(
         'all_cards.html',
-        cards=card_infos
+        cards=card_infos,
+        type_names=TYPE_NAMES
     )
 
 # This method generates a PDF for printing out multiple cards at a time
