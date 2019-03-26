@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, render_template
-from ghost_jukebox import app, auth
+from ghost_jukebox import app, basic_auth, security, conf
 from ghost_jukebox.views import spotify
 
 def get_image(image_set):
@@ -11,7 +11,7 @@ def get_image(image_set):
     return ''
 
 @app.route('/s//info/artist/<artist_id>')
-@auth.login_required
+@basic_auth.login_required
 def artist_info(artist_id):
     artist = spotify.artist(artist_id)
     if not artist:
@@ -19,6 +19,8 @@ def artist_info(artist_id):
     related_artists = spotify.related_artists(artist_id)
     top_tracks = spotify.top_tracks_of_artist(artist_id)
     top_albums = spotify.top_albums_of_artist(artist_id)
+    app.logger.info('HI {} vs {}'.format(request.environ['HTTP_X_FORWARDED_FOR'], conf.host_ip))
+    
     return render_template(
         'artist_info.html',
         image_url = get_image(artist.image_set),
@@ -26,12 +28,13 @@ def artist_info(artist_id):
         artist = artist,
         albums = top_albums,
         related_artists = related_artists,
-        tracks = top_tracks 
+        tracks = top_tracks,
+        is_home = security.is_home(request)
     )
     
 
 @app.route('/s//info/album/<album_id>')
-@auth.login_required
+@basic_auth.login_required
 def album_info(album_id):
     album = spotify.album(album_id)
     if not album:
@@ -40,11 +43,12 @@ def album_info(album_id):
     return render_template(
         'album_info.html',
         image_url = get_image(album.image_set), 
-        album = album
+        album = album,
+        is_home = security.is_home(request)
     )
 
 @app.route('/s//info/track/<track_id>')
-@auth.login_required
+@basic_auth.login_required
 def track_info(track_id):
     track = spotify.track(track_id)
     if not track:
@@ -54,11 +58,12 @@ def track_info(track_id):
     return render_template(
         'track_info.html',
         image_url = image_url,
-        track = track
+        track = track,
+        is_home = security.is_home(request)
     )
 
 @app.route('/s//info/playlist/<playlist_id>')
-@auth.login_required
+@basic_auth.login_required
 def playlist_info(playlist_id):
     playlist = spotify.playlist(playlist_id)
     if not playlist:
@@ -67,11 +72,12 @@ def playlist_info(playlist_id):
     return render_template(
         'playlist_info.html',
         image_url = get_image(playlist.image_set),
-        playlist = playlist
+        playlist = playlist,
+        is_home = security.is_home(request)
     )
 
 @app.route('/s//info/user/<user_id>')
-@auth.login_required
+@basic_auth.login_required
 def user_info(user_id):
     user = spotify.user(user_id)
     if not user:
@@ -84,7 +90,7 @@ def user_info(user_id):
     )
 
 @app.route('/s//search/<search_phrase>')
-@auth.login_required
+@basic_auth.login_required
 def search(search_phrase):
     if (search_phrase.strip()) == 0:
         return render_template('search.html', phrase = "", results = None)

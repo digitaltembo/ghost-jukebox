@@ -4,12 +4,12 @@ from time import sleep
 from PIL import Image
 import time
 
-from ghost_jukebox import app, auth
+from ghost_jukebox import app, basic_auth
 
 DEVICE_ID = 'DEVICE_ID'
 
 @app.route('/s//play/<music_type>/<item_id>')
-@auth.login_required
+@home_auth
 def play(music_type, item_id):
     if music_type == 'track':
         play_track(item_id)
@@ -25,13 +25,13 @@ def play(music_type, item_id):
         return 'blah'
 
 @app.route('/s//enqueue/<music_type>/<item_id>')
-@auth.login_required
+@home_auth
 def enqueue(music_type, item_id):
     queue.enqueue('{}/{}'.format(music_type, item_id))
     return ':)'
 
 @app.route('/s//shuffle/<music_type>/<item_id>')
-@auth.login_required
+@home_auth
 def shuffle(music_type, item_id):
     if music_type == 'track':
         play_track(item_id)
@@ -47,7 +47,7 @@ def shuffle(music_type, item_id):
         return 'blah'
 
 @app.route('/s//radio/<music_type>/<item_id>')
-@auth.login_required
+@home_auth
 def radio(music_type, item_id):
     if music_type == 'track':
         track_radio(item_id)
@@ -65,7 +65,7 @@ def radio(music_type, item_id):
 
 # called by the QR reader alone, when it thinks it should stop playing the current thing
 @app.route('/s//QRstop')
-@auth.login_required
+@home_auth
 def stop_qr(item_id):
     next_item = queue.pop()
     if next_item:
@@ -75,13 +75,13 @@ def stop_qr(item_id):
 
 
 @app.route('/s//play/')
-@auth.login_required
+@home_auth
 def resume():
     # figure out whats playing?
     return 'hmm'
 
 @app.route('/s//pause/')
-@auth.login_required
+@home_auth
 def pause():
     # stop whats playing?
     return 'hmm'

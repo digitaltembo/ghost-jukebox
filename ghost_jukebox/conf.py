@@ -17,3 +17,5 @@ host = get('GHOST_HOST', '0.0.0.0')
 db_path = get('GHOST_DB_PATH', 'model.db')
 
 upload_folder = get('GHOST_UPLOAD_DIR', '~/')
+
+host_ip = get('GHOST_HOST_IP', host)

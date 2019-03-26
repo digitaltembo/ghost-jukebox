@@ -6,7 +6,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from urllib.parse import quote
 
-from ghost_jukebox import app, auth, conf
+from ghost_jukebox import app, basic_auth, conf
 from ghost_jukebox.models import info 
 from ghost_jukebox.views import spotify_objects
 
@@ -35,7 +35,7 @@ def get_expiration_time(expires_in):
 
 
 @app.route('/spotify/login')
-@auth.login_required
+@basic_auth.login_required
 def authorize():
 
     request_params = {
@@ -73,7 +73,7 @@ def callback():
         return 'blah'
 
 @app.route('/spotify/api/<method>/<path:endpoint>')
-@auth.login_required
+@basic_auth.login_required
 def forward_spotify_call(method, endpoint):
     access_token = get_access_token()
     if not access_token:

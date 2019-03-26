@@ -9,15 +9,17 @@
             <div class="col">
                 <h1>{{ title }} {{ artist.spotify_link_elem() }}</h1>
                 <span class="controlbar">
-                    <a href="{{ url_for('play', music_type='artist', item_id=artist.id) }}" title="{{ 'Play ' + title }}">
-                        <i class="fas fa-play"></i>
-                    </a>
-                    <a href="{{ url_for('enqueue', music_type='artist', item_id=artist.id) }}" title="{{ 'Enqueue ' + title }}">
-                        <i class="fas fa-plus-square"></i>
-                    </a>
-                    <a href="{{ url_for('radio', music_type='artist', item_id=artist.id) }}" title="{{ 'Create a SmartRadio from ' + title }}">
-                        <i class="fas fa-robot"></i>
-                    </a>
+                    {% if is_home %}
+                        <a href="{{ url_for('play', music_type='artist', item_id=artist.id) }}" title="{{ 'Play ' + title }}">
+                            <i class="fas fa-play"></i>
+                        </a>
+                        <a href="{{ url_for('enqueue', music_type='artist', item_id=artist.id) }}" title="{{ 'Enqueue ' + title }}">
+                            <i class="fas fa-plus-square"></i>
+                        </a>
+                        <a href="{{ url_for('radio', music_type='artist', item_id=artist.id) }}" title="{{ 'Create a SmartRadio from ' + title }}">
+                            <i class="fas fa-robot"></i>
+                        </a>
+                    {% endif %}
                     <a href="{{ artist.qr_card_url() }}" title="Make QR Card for">
                         <i title='Make QR Card' class='fas fa-qrcode'></i>
                     </a>

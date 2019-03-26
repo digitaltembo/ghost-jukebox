@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template
 
-from ghost_jukebox import app, auth, common, conf
+from ghost_jukebox import app, basic_auth, common, conf
 from ghost_jukebox.models import info, card
 
 import math
@@ -76,7 +76,7 @@ def full_dir(code=None, code_num=None):
 
 
 @app.route('/s//QR<code>')
-@auth.login_required
+@basic_auth.login_required
 def get_qr_info(code):
     card_info = card.get_card_info(code)
     if not card_info:
@@ -95,18 +95,18 @@ def get_qr_info(code):
         return 'blah'
 
 @app.route('/s//play/QR<code>')
-@auth.login_required
+@basic_auth.login_required
 def play_qr(code):
     return 'HAH!'
 
 @app.route('/s//radio/QR<code>')
-@auth.login_required
+@basic_auth.login_required
 def generate_radio(code):
     return 'HAH'
 
 
 @app.route('/s//card/edit')
-@auth.login_required
+@basic_auth.login_required
 def edit_card_view():
     return edit_card(
         code      = request.args.get('code'),
@@ -140,7 +140,7 @@ def edit_card(errors=[], code=None, card_type=None, item_id=None, text=None):
     )
 
 @app.route('/s//QR<code>/view')
-@auth.login_required
+@basic_auth.login_required
 def view_card(code):
     info = card.get_card_info(code)
     if info:
@@ -156,7 +156,7 @@ def view_card(code):
 
 # This does the heavy lifting of actually saving a given card
 @app.route('/s//card/save', methods=['GET', 'POST'])
-@auth.login_required
+@basic_auth.login_required
 def save_card():
     if request.method == 'GET':
         card_type =     request.args.get('card_type')
@@ -314,7 +314,7 @@ def create_card_pattern(qr_code_img, cover_img, code, text):
 
 
 @app.route('/s//QRCards')
-@auth.login_required
+@basic_auth.login_required
 def all_cards():
     card_infos = card.get_all_sorted()
 
@@ -331,7 +331,7 @@ def all_cards():
 # and secondarily alphabetically by the "title"
 
 @app.route('/s//QRCards.pdf')
-@auth.login_required
+@basic_auth.login_required
 def make_and_view_pdf():
     largest = card.get_largest_code()
 

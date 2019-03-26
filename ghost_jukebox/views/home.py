@@ -4,11 +4,18 @@ from time import sleep
 from PIL import Image
 import time
 
-from ghost_jukebox import app, auth
+from ghost_jukebox import app, basic_auth
 
 @app.route('/')
-@auth.login_required
+@basic_auth.login_required
 def root():
-    return redirect('/s')
+    return redirect(url_for('home'))
+
+# all of the traffic
+@app.route('/s')
+@basic_auth.login_required
+def home():
+    return render_template('index.html', name=auth.username())
+
 
 

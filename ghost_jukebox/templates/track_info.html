@@ -11,15 +11,17 @@
                 <h3>By {{ track.artist_links() | join(', ') }}</h3>
 
                 <span class="controlbar">
-                    <a href="{{ url_for('play', music_type='track', item_id=track.id) }}" title="{{ 'Play ' + track.name }}">
-                        <i class="fas fa-play"></i>
-                    </a>
-                    <a href="{{ url_for('enqueue', music_type='track', item_id=track.id) }}" title="{{ 'Enqueue ' + track.name }}">
-                        <i class="fas fa-plus-square"></i>
-                    </a>
-                    <a href="{{ url_for('radio', music_type='track', item_id=track.id) }}" title="{{ 'Create a SmartRadio from ' + track.name }}">
-                        <i class="fas fa-robot"></i>
-                    </a>
+                    {% if is_home %}
+                        <a href="{{ url_for('play', music_type='track', item_id=track.id) }}" title="{{ 'Play ' + track.name }}">
+                            <i class="fas fa-play"></i>
+                        </a>
+                        <a href="{{ url_for('enqueue', music_type='track', item_id=track.id) }}" title="{{ 'Enqueue ' + track.name }}">
+                            <i class="fas fa-plus-square"></i>
+                        </a>
+                        <a href="{{ url_for('radio', music_type='track', item_id=track.id) }}" title="{{ 'Create a SmartRadio from ' + track.name }}">
+                            <i class="fas fa-robot"></i>
+                        </a>
+                    {% endif %}
                     <a href="{{ track.qr_card_url() }}" title="Make QR Card">
                         <i title='Make QR Card' class='fas fa-qrcode'></i>
                     </a>
