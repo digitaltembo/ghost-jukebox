@@ -1,0 +1,17 @@
+[Unit]
+Description=Ghost Jukebox Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+EnvironmentFile=/opt/ghost/environment
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+Group=www-data
+WorkingDirectory=/home/pi/server
+ExecStart=/home/pi/server/venv/bin/gunicorn --workers 2 --bind unix:ghost.sock -m 007 wsgi:app --log-config /home/pi/server/gunicorn_logging.conf
+
+[Install]
+WantedBy=multi-user.target
