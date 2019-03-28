@@ -82,6 +82,7 @@ def user_info(user_id):
     user = spotify.user(user_id)
     if not user:
         return 'dang'
+    user.playlists = spotify.users_playlists(user_id)
 
     return render_template(
         'user_info.html',
@@ -103,4 +104,3 @@ def search(search_phrase):
             phrase = search_phrase, 
             results = search_results
         )
-

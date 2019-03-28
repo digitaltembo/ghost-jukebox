@@ -14,11 +14,16 @@ SPOTIFY_AUTHORIZE_URL = 'https://accounts.spotify.com/authorize'
 SPOTIFY_TOKEN_URL     = 'https://accounts.spotify.com/api/token'
 
 SCOPES = [
+    'playlist-modify-private',
+    'playlist-read-collaborative',
+    'playlist-read-private',
+    'user-follow-read',
     'user-modify-playback-state',
+    'user-read-currently-playing',
     'user-read-playback-state',
     'user-read-recently-played',
-    'playlist-read-private',
-    'user-read-currently-playing'
+    'user-read-recently-played',
+    'user-top-read',
 ] 
 
 SPOTIFY_ACCESS_TOKEN = 'SPOTIFY_ACCESS_TOKEN'
@@ -238,6 +243,14 @@ def users_playlists(user_id):
 def populate_users_playlists(user):
     user.playlists = users_playlists(user.id)
     return user
+
+def my_playlists():
+    info, response_code = internal_spotify_call('GET', 'me/playlists')
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlists: {}'.format(info))
+        return False
+    return [spotify_objects.playlist_from_json(playlist) for playlist in info['items']]
+
 
 SEARCH_ALBUM    = 'album'
 SEARCH_ARTIST   = 'artist'
