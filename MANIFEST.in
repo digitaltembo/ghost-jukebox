@@ -1,0 +1,6 @@
+include ghost_jukebox/static/favicon.ico
+include *.html
+include *.css
+include LICENSE
+include infrastructure/*
+include README.md
