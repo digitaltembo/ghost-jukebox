@@ -1,5 +1,17 @@
 # Ghost Jukebox
 
+# Install
+
+To install this on a Raspberry Pi equipped with a Pi Camera, first you need to install the requirements:
+
+```sudo apt-get install build-essential libffi-dev libjpeg-dev libopenjp2-7 libssl-dev libzbar0 mplayer python-dev python3-pip python3-venv```
+
+Then, just install this python package!
+
+```python3 setup.py install```
+
+# Idea
+
 The idea of the Ghost Jukebox is twofold.
 1. It should be like a Ghost - present yet unobtrusive and a bit magical
 2. It should be like a Jukebox - you can play music on it
