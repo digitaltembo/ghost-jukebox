@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
-from system import check_call
+from subprocess import check_call
 
 
 def initialize_scripts():
@@ -56,7 +56,6 @@ setup(
     author_email="nolanhhawkins@gmail.com",
     description="A Raspberry Pi integrated music controller",
     long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/digitaltembo/ghost-jukebox/",
     packages=find_packages(),
     classifiers=[
