@@ -254,7 +254,7 @@ def my_playlists():
 
 # returns: Array<Track>
 def my_recently_played():
-    info, response_code = internal_spotify_call('GET', 'me/recently-played')
+    info, response_code = internal_spotify_call('GET', 'me/player/recently-played')
     if not info or response_code != 200:
         app.logger.error('Failed to fetch playlists: {}'.format(info))
         return False
@@ -281,14 +281,14 @@ def my_followed_artists():
     if not info or response_code != 200:
         app.logger.error('Failed to fetch playlists: {}'.format(info))
         return False
-    return [spotify_objects.artist_from_json(artist) for artist in info['items']]
+    return [spotify_objects.artist_from_json(artist) for artist in info['artists']['items']]
 
 def my_user():
     info, response_code = internal_spotify_call('GET', 'me')
     if not info or response_code != 200:
         app.logger.error('Failed to fetch user: {}'.format(info))
         return False
-    return spotify_objects.user_from_json(artist)
+    return spotify_objects.user_from_json(info)
 
 
 SEARCH_ALBUM    = 'album'
@@ -330,5 +330,6 @@ def stop(device_id):
     info, response_code = internal_spotify_call('PUT', 'me/player/pause?device_id={}'.format(device_id))
     return info, response_code
     
+
 
 

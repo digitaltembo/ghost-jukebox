@@ -112,7 +112,7 @@ def me_page():
     me = spotify.my_user()
     return render_template(
         'my_page.html',
-        image_url = get_image(me.image_set)
+        image_url = get_image(me.image_set),
         me = me,
         recent_tracks = spotify.my_recently_played(),
         top_artists = spotify.my_top_artists(),
@@ -120,3 +120,4 @@ def me_page():
         followed_artists = spotify.my_followed_artists(),
         followed_playlists = spotify.my_playlists()
     )
+
