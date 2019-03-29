@@ -5,6 +5,7 @@ from flask import url_for
 def strify(number):
     return '{0:04d}'.format(number)
 
+
 class CardInfo:
     def __init__(self, code, card_type, item_id, title):
         self.code = code
@@ -17,6 +18,8 @@ class CardInfo:
         return url_for("static", filename="{}/final.jpg".format(self.static_dir()))
     def view_link(self):
         return url_for('view_card', code=self.code)
+    def info_link(self):
+        return url_for('get_qr_info', code=self.code)
 
 def get_card_info(code):
     row = query_one('SELECT code, card_type, item_id, title FROM cards WHERE code = ?', [code])
