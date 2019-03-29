@@ -82,6 +82,7 @@ def user_info(user_id):
     user = spotify.user(user_id)
     if not user:
         return 'dang'
+
     user.playlists = spotify.users_playlists(user_id)
 
     return render_template(
@@ -104,3 +105,18 @@ def search(search_phrase):
             phrase = search_phrase, 
             results = search_results
         )
+
+@app.route('/s//me')
+@basic_auth.login_required
+def me_page():
+    me = spotify.my_user()
+    return render_template(
+        'my_page.html',
+        image_url = get_image(me.image_set)
+        me = me,
+        recent_tracks = spotify.my_recently_played(),
+        top_artists = spotify.my_top_artists(),
+        top_tracks = spotify.my_top_tracks(),
+        followed_artists = spotify.my_followed_artists(),
+        followed_playlists = spotify.my_playlists()
+    )

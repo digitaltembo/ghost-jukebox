@@ -6,7 +6,7 @@
     <p>Playlists</p>
     <ol>
     {% for playlist in user.playlists %}
-        <li>{{ playlist.link }}</li>
+        <li>{{ playlist.link() }}</li>
     {% endfor %}
     </ol>
 {% endblock %}

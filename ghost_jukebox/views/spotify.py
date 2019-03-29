@@ -233,7 +233,7 @@ def user(user_id):
 
 # returns: Array<Playlist>
 def users_playlists(user_id):
-    info, response_code = internal_spotify_call('GET', 'users/{user_id}/playlists'.format(user_id))
+    info, response_code = internal_spotify_call('GET', 'users/{}/playlists'.format(user_id))
     if not info or response_code != 200:
         app.logger.error('Failed to fetch playlists: {}'.format(info))
         return False
@@ -244,12 +244,51 @@ def populate_users_playlists(user):
     user.playlists = users_playlists(user.id)
     return user
 
+# returns: Array<Playlist>
 def my_playlists():
     info, response_code = internal_spotify_call('GET', 'me/playlists')
     if not info or response_code != 200:
         app.logger.error('Failed to fetch playlists: {}'.format(info))
         return False
     return [spotify_objects.playlist_from_json(playlist) for playlist in info['items']]
+
+# returns: Array<Track>
+def my_recently_played():
+    info, response_code = internal_spotify_call('GET', 'me/recently-played')
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlists: {}'.format(info))
+        return False
+    return [spotify_objects.track_from_json(track['track']) for track in info['items']]
+
+# returns: Array<Artist>
+def my_top_artists():
+    info, response_code = internal_spotify_call('GET', 'me/top/artists')
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlists: {}'.format(info))
+        return False
+    return [spotify_objects.artist_from_json(artist) for artist in info['items']]
+
+# returns: Array<Track>
+def my_top_tracks():
+    info, response_code = internal_spotify_call('GET', 'me/top/tracks')
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlists: {}'.format(info))
+        return False
+    return [spotify_objects.track_from_json(track) for track in info['items']]
+
+def my_followed_artists():
+    info, response_code = internal_spotify_call('GET', 'me/following?type=artist')
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch playlists: {}'.format(info))
+        return False
+    return [spotify_objects.artist_from_json(artist) for artist in info['items']]
+
+def my_user():
+    info, response_code = internal_spotify_call('GET', 'me')
+    if not info or response_code != 200:
+        app.logger.error('Failed to fetch user: {}'.format(info))
+        return False
+    return spotify_objects.user_from_json(artist)
 
 
 SEARCH_ALBUM    = 'album'

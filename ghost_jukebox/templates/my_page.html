@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Me!{% endblock %}
+{% block content %}
+    <img src="{{ image_url }}"/>
+    <h1>{{ me.name }}</h1>
+    <p>Look on my works, ye mighty, and Despair!</p>
+    <p>Recent Tracks</p>
+    <ol>
+    {% for track in recent_tracks %}
+        <li>{{ track.link() }}</li>
+    {% endfor %}
+    </ol>
+    <p>Top Tracks</p>
+    <ol>
+    {% for track in top_tracks %}
+        <li>{{ track.link() }}</li>
+    {% endfor %}
+    </ol>
+    <p>Top Artists</p>
+    <ol>
+    {% for artist in top_artists %}
+        <li>{{ artist.link() }}</li>
+    {% endfor %}
+    </ol>
+    <p>Followed Artists</p>
+    <ol>
+    {% for artist in followed_artists %}
+        <li>{{ artist.link() }}</li>
+    {% endfor %}
+    </ol>
+    <p>Followed Playlists</p>
+    <ol>
+    {% for playlist in followed_playlists %}
+        <li>{{ playlist.link() }}</li>
+    {% endfor %}
+    </ol>
+{% endblock %}
