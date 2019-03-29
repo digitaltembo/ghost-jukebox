@@ -116,7 +116,7 @@ def edit_card_view():
     )
 
 def edit_card(errors=[], code=None, card_type=None, item_id=None, text=None):
-    if any([code, card_type, item_id, text]) and all([code, card_type, item_id, text]):
+    if all([i is not None for i in [code, card_type, item_id, text]]):
         return render_template(
             'card_edit.html',
             errors    = errors,
