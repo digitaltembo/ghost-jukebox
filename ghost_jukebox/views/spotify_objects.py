@@ -271,6 +271,8 @@ def image_from_json(info):
         app.logger.exception('Could not parse image from {}'.format(str(info)))
         return False
 
+DEFAULT_IMAGE = Image(url_of('static',filename='noalbum.png'), 400,400)
+
 class ImageSet:
     def __init__(self, images):
         self.images = images 
@@ -279,25 +281,28 @@ class ImageSet:
         width_delta = lambda img: abs(img.width - target_width)
         height_delta = lambda img: abs(img.height - target_height)
         delta = 100000
-        to_return = self.images[0]
-        if target_width == None and target_height == None:
-            return to_return
-        elif target_width == None:
-            for img in self.images:
-                if height_delta(img) < delta:
-                    delta = height_delta(img)
-                    to_return = img 
-        elif target_height == None:
-            for img in self.images:
-                if width_delta(img) < delta:
-                    delta = width_delta(img)
-                    to_return = img 
+        if len(images) == 0:
+            return DEFAULT_IMAGE
         else:
-            for img in self.images:
-                if width_delta(img) + height_delta(img) < delta:
-                    delta = width_delta(img) + height_delta(img)
-                    to_return = img 
-        return to_return
+            to_return = self.images[0] 
+            if target_width == None and target_height == None:
+                return to_return
+            elif target_width == None:
+                for img in self.images:
+                    if height_delta(img) < delta:
+                        delta = height_delta(img)
+                        to_return = img 
+            elif target_height == None:
+                for img in self.images:
+                    if width_delta(img) < delta:
+                        delta = width_delta(img)
+                        to_return = img 
+            else:
+                for img in self.images:
+                    if width_delta(img) + height_delta(img) < delta:
+                        delta = width_delta(img) + height_delta(img)
+                        to_return = img 
+            return to_return
 
 def image_set_from_json(info):
     return ImageSet(remove_empties([image_from_json(img) for img in info]))
