@@ -7,3 +7,5 @@ ghost_jukebox/static/*
 !ghost_jukebox/static/styles.css
 log/*
 the.db
+build/*
+dist/*
