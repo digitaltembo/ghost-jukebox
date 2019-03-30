@@ -25,11 +25,26 @@
                         <i title='Make QR Card' class='fas fa-qrcode'></i>
                     </a>
                 </span>
-                <ol>
-                {% for track in playlist.tracks %}
-                    <li>{{ track.link() }} {{ track.preview_element() }}</li>
-                {% endfor %}
-                </ol>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Album</th>
+                            <th scope="col">Artist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for track in playlist.tracks %}
+                        <tr>
+                            <td scope="row">{{ loop.index }}</td>
+                            <td>{{ track.link() }} {{ track.preview_element() }}<td>
+                            <td>by {{ track.artist.link() }}</td>
+                            <td>{% if track.album %}off of {{ track.album.link() }}{% endif %}</td>
+                        </td>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

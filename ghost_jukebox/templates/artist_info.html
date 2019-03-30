@@ -29,27 +29,40 @@
         <div class="row">
             <div class="col">
                 <h2>Top Albums:</h2>
-                <ul>
-                {% for album in albums %}
-                    <li>{{ album.link() }}</li>
-                {% endfor %}
-                </ul>
+                <table class="table">
+                    <tbody>
+                        {% for album in albums %}
+                            <tr>
+                                <td>{{ album.link() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <div class="col">
                 <h2>Top Tracks:</h2>
-                <ul>
-                {% for track in tracks %}
-                    <li>{{ track.link() }} {{ track.preview_element() }}</li>
-                {% endfor %}
-                </ul>
+                <table class="table">
+                    <tbody>
+                        {% for track in tracks %}
+                            <tr>
+                                <td>{{ track.link() }} {{ track.preview_element() }}</td>
+                                <td>{% if track.album %}{{ track.album.link() }}{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <div class="col">
                 <h2>Related Artists:</h2>
-                <ul>
-                {% for artist in related_artists %}
-                    <li>{{ artist.link() }}</li>
-                {% endfor %}
-                </ul>
+                <table class="table">
+                    <tbody>
+                        {% for artist in related_artists %}
+                            <tr>
+                                <td>{{ artist.link() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
