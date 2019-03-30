@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col">
                 <h2>Top Albums:</h2>
-                <table class="table">
+                <table class="table table-hover">
                     <tbody>
                         {% for album in albums %}
                             <tr>
@@ -41,12 +41,12 @@
             </div>
             <div class="col">
                 <h2>Top Tracks:</h2>
-                <table class="table">
+                <table class="table table-hover">
                     <tbody>
                         {% for track in tracks %}
                             <tr>
                                 <td>{{ track.link() }} {{ track.preview_element() }}</td>
-                                <td>{% if track.album %}{{ track.album.link() }}{% endif %}</td>
+                                <td>{% if track.album %}off of {{ track.album.link() }}{% endif %}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -54,7 +54,7 @@
             </div>
             <div class="col">
                 <h2>Related Artists:</h2>
-                <table class="table">
+                <table class="table table-hover">
                     <tbody>
                         {% for artist in related_artists %}
                             <tr>

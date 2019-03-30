@@ -7,41 +7,60 @@
                 {% if results.artists %}
                     <div class="col">
                         <h2>Artists</h2>
-                        <ul>
-                        {% for artist in results.artists %}
-                            <li>{{ artist.link() }}</li>
-                        {% endfor %}
-                        </ul>
+                        <table class="table table-hover table-bordered ">
+                            <tbody>
+                                {% for artist in results.artists %}
+                                    <tr>
+                                        <td>{{ artist.link() }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 {% endif %}
                 {% if results.albums %}
                     <div class="col">
                         <h2>Albums</h2>
-                        <ul>
-                        {% for album in results.albums %}
-                            <li>{{ album.link() }}</li>
-                        {% endfor %}
-                        </ul>
+                        <table class="table table-hover table-bordered ">
+                            <tbody>
+                                {% for album in results.albums %}
+                                    <tr>
+                                        <td>{{ album.link() }} </td>
+                                        <td>by {{ album.artist_links()|join(', ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 {% endif %}
                 {% if results.tracks %}
                     <div class="col">
                         <h2>Tracks</h2>
-                        <ul>
-                        {% for track in results.tracks %}
-                            <li>{{ track.link() }}</li>
-                        {% endfor %}
-                        </ul>
+                        <table class="table table-hover table-bordered ">
+                            <tbody>
+                                {% for track in results.tracks %}
+                                    <tr>
+                                        <td>{{ track.link() }} {{ track.preview_element() }}</td>
+                                        <td>by {{ track.artist_links()|join(', ') }}</td>
+                                        <td>{% if track.album %}off of {{ track.album.link() }}{% endif %}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 {% endif %}
                 {% if results.playlists %}
                     <div class="col">
                         <h2>Playlists</h2>
-                        <ul>
-                        {% for playlist in results.playlists %}
-                            <li>{{ playlist.link() }}</li>
-                        {% endfor %}
-                        </ul>
+                        <table class="table table-hover table-bordered ">
+                            <tbody>
+                                {% for playlist in results.playlists %}
+                                    <tr>
+                                        <td>{{ playlist.link() }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 {% endif %}
             {% else %}
