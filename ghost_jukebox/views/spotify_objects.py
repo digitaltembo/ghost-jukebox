@@ -137,7 +137,10 @@ class Track:
     def url(self):
         return url_for('track_info', track_id = self.id)
     def link(self):
-        return Markup("<a href='{}' class='track-link'>{}</a>".format(self.url(), escape(self.name)))
+        if self.id:
+            return Markup("<a href='{}' class='track-link'>{}</a>".format(self.url(), escape(self.name)))
+        else:
+            return self.name
     def artist_links(self):
         return [artist.link() for artist in self.artists]
     def preview_element(self):
@@ -271,7 +274,7 @@ def image_from_json(info):
         app.logger.exception('Could not parse image from {}'.format(str(info)))
         return False
 
-DEFAULT_IMAGE = Image(url_of('static',filename='noalbum.png'), 400,400)
+DEFAULT_IMAGE = Image('/static/noalbum.png', 400,400)
 
 class ImageSet:
     def __init__(self, images):
@@ -281,7 +284,7 @@ class ImageSet:
         width_delta = lambda img: abs(img.width - target_width)
         height_delta = lambda img: abs(img.height - target_height)
         delta = 100000
-        if len(images) == 0:
+        if len(self.images) == 0:
             return DEFAULT_IMAGE
         else:
             to_return = self.images[0] 
