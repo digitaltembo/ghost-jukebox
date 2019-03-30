@@ -29,9 +29,16 @@ def initialize_scripts():
             nginx_write.write(line.replace('HOST', env['GHOST_HOST']))
     check_call('sudo mv ghost.nginx /etc/nginx/sites-available/ghost'.split(' '))
     check_call('sudo mv infrastructure/ghost.service /etc/systemd/system'.split(' '))
-    print('Now, all you need to do is to make a symlink in /etc/nginx/sites-enabled to enable it, and then do sudo systemctl ghost start')
 
-
+    check_call('sudo mv infrastructure/jail.local /etc/fail2ban'.split(' ')) 
+    check_call('sudo mv infrastructure/nginx-badbots.conf /etc/fail2ban/filter.d/'.split(' ')) 
+    check_call('sudo mv infrastructure/nginx-noscript.conf /etc/fail2ban/filter.d/'.split(' ')) 
+    
+    print('''
+        Now, all you need to do is to make a symlink in /etc/nginx/sites-enabled to enable it, 
+        and then run `sudo systemctl start ghost`. Run `sudo systemctl start fail2ban` to ban requests
+        that look spammy/hacky
+    ''')
 
 
 class PostDevelopCommand(develop):
@@ -61,6 +68,7 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: Raspberry Pi",
+        "License :: OSI Approved :: MIT License",
     ],
     keywords="raspberry pi raspberrypi music jukebox picamera",
     

@@ -4,7 +4,7 @@
 
 To install this on a Raspberry Pi equipped with a Pi Camera, first you need to install the requirements:
 
-```sudo apt-get install build-essential libffi-dev libjpeg-dev libopenjp2-7 libssl-dev libzbar0 mplayer python-dev python3-pip python3-venv```
+```sudo apt-get install build-essential libffi-dev libjpeg-dev libopenjp2-7 libssl-dev libzbar0 mplayer python-dev python3-pip python3-venv fail2ban```
 
 Then, just install this python package!
 
