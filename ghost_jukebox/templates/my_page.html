@@ -1,37 +1,76 @@
 {% extends "base.html" %}
 {% block title %}Me!{% endblock %}
 {% block content %}
-    <img src="{{ image_url }}"/>
-    <h1>{{ me.name }}</h1>
-    <p>Look on my works, ye mighty, and Despair!</p>
-    <p>Recent Tracks</p>
-    <ol>
-    {% for track in recent_tracks %}
-        <li>{{ track.link() }}</li>
-    {% endfor %}
-    </ol>
-    <p>Top Tracks</p>
-    <ol>
-    {% for track in top_tracks %}
-        <li>{{ track.link() }}</li>
-    {% endfor %}
-    </ol>
-    <p>Top Artists</p>
-    <ol>
-    {% for artist in top_artists %}
-        <li>{{ artist.link() }}</li>
-    {% endfor %}
-    </ol>
-    <p>Followed Artists</p>
-    <ol>
-    {% for artist in followed_artists %}
-        <li>{{ artist.link() }}</li>
-    {% endfor %}
-    </ol>
-    <p>Followed Playlists</p>
-    <ol>
-    {% for playlist in followed_playlists %}
-        <li>{{ playlist.link() }}</li>
-    {% endfor %}
-    </ol>
+
+    <div class="container">
+        <div class="row">
+            <img src="{{ image_url }}"/>
+            <h1>{{ me.name }}</h1>
+            <p>Look on my works, ye mighty, and Despair!</p>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h2>Recently played</h2>
+
+                <table class="table table-hover table-bordered ">
+                    <tbody>
+                        {% for track in recent_tracks %}
+                            <tr>
+                                <td>{{ track.link() }} {{ track.preview_element() }}</td>
+                                <td>by {{ track.artist_links()|join(', ') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <h2>Top</h2>
+
+                <table class="table table-hover table-bordered ">
+                    <thead><th>Artists</th></thead>
+                    <tbody>
+                        {% for artist in top_artists %}
+                            <tr>
+                                <td>{{ artist.link() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <table class="table table-hover table-bordered ">
+                    <thead><th>Tracks</th></thead>
+                    <tbody>
+                        {% for track in top_tracks %}
+                            <tr>
+                                <td>{{ track.link() }} {{ track.preview_element() }}</td>
+                                <td>by {{ track.artist_links()|join(', ') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <h2>Following</h2>
+                <table class="table table-hover table-bordered ">
+                    <thead><th>Playlists</th></thead>
+                    <tbody>
+                        {% for playlist in followed_playlist %}
+                            <tr>
+                                <td>{{ playlist.link() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <table class="table table-hover table-bordered ">
+                    <thead><th>Artists</th></thead>
+                    <tbody>
+                        {% for artist in followed_artists %}
+                            <tr>
+                                <td>{{ artist.link() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

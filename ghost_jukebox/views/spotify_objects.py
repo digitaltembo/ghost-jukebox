@@ -24,7 +24,10 @@ class Artist:
     def url(self):
         return url_for('artist_info', artist_id = self.id)
     def link(self):
-        return Markup("<a href='{}' class='artist-link'>{}</a>".format(self.url(), escape(self.name)))
+        if self.id:
+            return Markup("<a href='{}' class='artist-link'>{}</a>".format(self.url(), escape(self.name)))
+        else:
+            return self.name
     def spotify_link_elem(self):
         return Markup("<a href='{}'><i class='fas fa-external-link-alt'></i></a>".format(self.spotify_link))
     def qr_card_url(self):
@@ -80,7 +83,10 @@ class Album:
     def url(self):
         return url_for('album_info', album_id = self.id)
     def link(self):
-        return Markup("<a href='{}' class='album-link'>{}</a>".format(self.url(), escape(self.name)))
+        if self.id:
+            return Markup("<a href='{}' class='album-link'>{}</a>".format(self.url(), escape(self.name)))
+        else:
+            return self.name
     def artist_links(self):
         return [artist.link() for artist in self.artists]
     def qr_card_url(self):
